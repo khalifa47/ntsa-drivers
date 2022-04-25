@@ -9,7 +9,7 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import { ListItemButton, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
 
 const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
-    const drawerWidth = 190;
+    const drawerWidth = 250;
 
     const options = [
         {
