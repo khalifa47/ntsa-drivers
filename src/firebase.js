@@ -1,0 +1,23 @@
+import { initializeApp } from "firebase/app";
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyA8tqdM198HE-8TxJ4phhk_rnxTlHe5MRc",
+    authDomain: "ntsa-drivers-e8a6a.firebaseapp.com",
+    projectId: "ntsa-drivers-e8a6a",
+    storageBucket: "ntsa-drivers-e8a6a.appspot.com",
+    messagingSenderId: "736696482990",
+    appId: "1:736696482990:web:7ef31be6ce73d0449f413f"
+};
+
+// Initialize Firebase
+initializeApp(firebaseConfig);
+const db = getFirestore();
+const auth = getAuth();
+
+export { auth };
+export default db;
+
+// firebase deploy --only hosting:ntsadrivers
