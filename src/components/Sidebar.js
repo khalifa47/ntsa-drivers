@@ -23,7 +23,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             name: 'License',
             icon: <CreditCardIcon />,
             suboptions: [
-                "Renewal", "Smart DL"
+                "Apply for Smart DL", "Renewal"
             ]
         },
         {
@@ -100,7 +100,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                     display: { xs: 'block', md: 'none' },
                     '& .MuiDrawer-paper': {
                         boxSizing: 'border-box',
-                        boxShadow: 5,
+                        pt: '1rem',
                         width: drawerWidth,
                         background: '#47b376',
                         color: "white",
@@ -116,8 +116,8 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                     display: { xs: 'none', md: 'block' },
                     '& .MuiDrawer-paper': {
                         boxSizing: 'border-box',
-                        boxShadow: 5,
                         width: drawerWidth,
+                        pt: '1rem',
                         top: "70px",
                         background: '#47b376',
                         color: "white",
