@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Drawer from "@mui/material/Drawer";
@@ -23,7 +24,8 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             name: 'License',
             icon: <CreditCardIcon />,
             suboptions: [
-                "Apply for Smart DL", "Renewal"
+                <Link to="/apply-for-smart-dl">Apply for new license</Link>, 
+                <Link to="/renew-dl">Renew License</Link>
             ]
         },
         {
@@ -52,34 +54,13 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                             }
                         >
                             {option.suboptions.map(suboption => (
-                                <ListItemButton key={suboption} dense={true}>
-                                    <ListItemText primary={suboption} />
+                                <ListItemButton key={suboption} dense={true} >
+                                    <ListItemText  primary={suboption} />
                                 </ListItemButton>
                             ))}
                         </List>
                     ))
                 }
-                {/* <List
-                    sx={{ background: '#47b376' }}
-                    subheader={
-                        <ListSubheader sx={{ background: '#47b376', color: "white" }} component="div">
-                            <ListItemIcon>
-                                {option.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={option.name} />
-                            Nested List Items
-                        </ListSubheader>
-                    }
-                >
-                    {options.map(option => (
-                        <ListItemButton key={option.name}>
-                            <ListItemIcon>
-                                {option.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={option.name} />
-                        </ListItemButton>
-                    ))}
-                </List> */}
             </Box>
         </div>
     );
