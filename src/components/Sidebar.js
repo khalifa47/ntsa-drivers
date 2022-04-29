@@ -10,21 +10,22 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import { ListItemButton, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
 
 const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
-    const drawerWidth = 250;
+    const drawerWidth = 280;
 
     const options = [
         {
             name: 'Account Info',
             icon: <AccountBoxIcon />,
             suboptions: [
-                "My DL", "Account Management"
+                <Link to="/my-dl">My Driving License</Link>, 
+                <Link to="/account-management">Account Management</Link>
             ]
         },
         {
             name: 'License',
             icon: <CreditCardIcon />,
             suboptions: [
-                <Link to="/apply-for-smart-dl">Apply for new license</Link>, 
+                <Link to="/apply-for-smart-dl">Smart Driving License Application</Link>, 
                 <Link to="/renew-dl">Renew License</Link>
             ]
         },
@@ -32,7 +33,8 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             name: 'New Drivers',
             icon: <AccessibilityNewIcon />,
             suboptions: [
-                "Application for PDL", "Test Booking"
+                <Link to="/pdl-application">Appliocation for PDL</Link>, 
+                <Link to="/test-booking">Test Booking</Link>
             ]
         }
     ];
