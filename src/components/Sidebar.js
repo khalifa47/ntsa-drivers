@@ -44,8 +44,8 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             <Toolbar sx={{ display: { xs: 'block', md: 'none' }, height: "70px" }} />
             <Box sx={{ overflow: 'auto' }}>
                 {
-                    options.map(option => (
-                        <List
+                    options.map((option, i) => (
+                        <List key={`option-${i}`}
                             subheader={
                                 <ListSubheader sx={{ background: '#98ffc5', display: 'flex', justifyContent: "space-evenly", alignItems: "center", cursor: "default" }} component="div">
                                     <ListItemIcon>
@@ -55,8 +55,8 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                                 </ListSubheader>
                             }
                         >
-                            {option.suboptions.map(suboption => (
-                                <ListItemButton key={suboption} dense={true} >
+                            {option.suboptions.map((suboption, i) => (
+                                <ListItemButton key={`sub-option-${i}`} dense={true} >
                                     <ListItemText  primary={suboption} />
                                 </ListItemButton>
                             ))}

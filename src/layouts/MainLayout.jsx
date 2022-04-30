@@ -3,6 +3,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { useState } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import { Outlet } from 'react-router-dom';
 
 const MainLayout = ({ children }) => {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -22,7 +23,7 @@ const MainLayout = ({ children }) => {
             {/* Content */}
             <Box component="main" sx={{ flexGrow: 1, p: 1 }}>
                 <Toolbar />
-                {children}
+                <Outlet/>
             </Box>
         </Box>
     );
