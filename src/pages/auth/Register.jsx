@@ -7,7 +7,7 @@ import { toast } from '../../utils/helpers';
 import { register } from '../../firebase';
 import publicRecords from '../../records.json';
 import map from 'lodash.map';
-import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
