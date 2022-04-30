@@ -1,14 +1,13 @@
 import { Autocomplete, Grid, Paper, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { lazy, useEffect, useState } from 'react';
+import { lazy, useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from '../../utils/helpers';
-import db, { auth, register } from '../../firebase';
-import { addDoc, collection } from 'firebase/firestore';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { register } from '../../firebase';
 import publicRecords from '../../records.json';
 import map from 'lodash.map';
+import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
@@ -18,16 +17,18 @@ const LoginSharp = lazy(() => import('@mui/icons-material/LoginSharp'));
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
 const validationSchema = yup.object({
-    phone: yup.number().required('Phone number is required.'),
+    phone: yup.number().test({
+        name: 'is-valid-phone',
+        message: 'Invalid phone number',
+        test: value => isValidPhoneNumber(String(value), 'KE')
+    }).required('Phone number is required.'),
     blood_group: yup.string().oneOf(bloodGroups, 'Invalid blood group').required('Blood group is required.'),
     serial_number: yup.number().oneOf(map(publicRecords, 'serial_id'), 'Invalid serial number')
                       .required('Serial number is required.'),
     email: yup.string().email('Must be a valid email').max(100).required('Email is required.'),
     password: yup.string().max(20).required('Password is required.'),
-    password_confirmation: yup.string().oneOf([
-        yup.ref('password'),
-        null
-    ], 'Passwords do not match').required('Password confirmation is required')
+    password_confirmation: yup.string().oneOf([yup.ref('password')], 'Passwords do not match')
+                              .required('Password confirmation is required')
 });
 
 const Register = () => {
@@ -48,7 +49,7 @@ const Register = () => {
             setLoading(true);
 
             try {
-                await register(values)
+                await register(values);
 
                 navigate('/');
             } catch (err) {
@@ -119,6 +120,7 @@ const Register = () => {
                                    helperText={formik.touched.password_confirmation && formik.errors.password_confirmation}
                                    onChange={formik.handleChange}/>
                     </Grid>
+                    <div id={'recaptcha-container'}/>
                     <Grid item xs={12} textAlign={'right'}>
                         <LoadingButton size="small" color="primary" loading={loading} type={'submit'}
                                        loadingPosition="end" className="w-100 mt-3" onClick={() => formik.submitForm()}

@@ -3,6 +3,7 @@ import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import publicRecords from './records.json';
 import { toast } from './utils/helpers';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -20,31 +21,33 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const signInWithPhone = () => {
+const signInWithPhone = async phone => {
+    const { number } = parsePhoneNumber(phone, 'KE');
+
     let appVerifier = new RecaptchaVerifier('recaptcha-container', {
         size: 'invisible',
         defaultCountry: 'KE'
     }, auth);
 
-    signInWithPhoneNumber(auth, phone, appVerifier).then(function (res) {
+    try {
+        const confirmationRes = await signInWithPhoneNumber(auth, number, appVerifier)
+
         let code = prompt('Enter the otp', '');
 
         if (code === null) return false;
 
-        res.confirm(code).then(result => {
-            console.log(result.user);
+        return await confirmationRes.confirm(code);
+    } catch (err) {
+        console.log(err);
+        toast({ msg: 'Unable to complete registration!' })
+    }
+};
 
-            return true;
-        }).catch(err => {
-            console.log(err);
-            toast({msg: err.message});
+export const register = async ({ email, phone, blood_group, password, serial_number: serial_id }) => {
+    const isVerifiedPhone = await signInWithPhone(phone);
 
-            return false;
-        });
-    });
-}
+    if (!isVerifiedPhone) throw new Error('Unable to verify OTP!');
 
-export const register = async ({email, phone, blood_group, password, serial_number:serial_id}) => {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
 

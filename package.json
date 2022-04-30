@@ -14,6 +14,7 @@
     "@testing-library/user-event": "^14.1.1",
     "firebase": "^9.6.11",
     "formik": "^2.2.9",
+    "libphonenumber-js": "^1.9.52",
     "lodash.map": "^4.6.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
