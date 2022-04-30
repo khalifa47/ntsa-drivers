@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from './components/Layout';
-import Apply from './components/Apply'
-import Renew from './components/Renew'
+import Apply from './components/license/Apply'
+import Renew from './components/license/Renew'
 import { Routes, Route } from 'react-router-dom';
 
 function App() {

@@ -1,5 +1,5 @@
 import React from 'react'
-import ApplyForm from './mini-components/ApplyForm'
+import ApplyForm from '../mini-components/ApplyForm'
 
 const Apply = () => {
   
