@@ -1,12 +1,12 @@
 import { Grid, Paper, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { lazy, useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import { lazy, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import { register, reset } from '../../redux/features/auth/authSlice';
 import * as yup from 'yup';
 import { toast } from '../../utils/helpers';
-import { useDispatch } from 'react-redux';
+import db from '../../firebase';
+import { addDoc, collection } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
@@ -23,22 +23,32 @@ const validationSchema = yup.object({
 
 const Register = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const { user, isLoading, isError, isSuccess, message } = useAuth();
+    const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
         initialValues: { phone: '', email: '', blood_group: '', password: '', password_confirmation: '' },
         validationSchema: validationSchema,
-        onSubmit: values => dispatch(register(values))
+        onSubmit: async ({ email, blood_group, password }) => {
+            setLoading(true)
+            try {
+                const res = await createUserWithEmailAndPassword(email, password);
+                const user = res.user;
+                await addDoc(collection(db, "users"), {
+                    uid: user.uid,
+                    blood_group,
+                    password,
+                    authProvider: "local",
+                    email,
+                });
+
+                navigate('/login')
+            } catch (err) {
+                console.error(err);
+                toast({ msg:err.message });
+            }
+            setLoading(false)
+        }
     });
-
-    useEffect(() => {
-        if (isError) toast({ msg: message, type: 'danger' });
-        if (isSuccess || user) navigate('/');
-
-        dispatch(reset());
-    }, [user, isError, isSuccess, message, navigate, dispatch]);
 
     return (
         <Grid container alignItems={'center'} justifyContent={'center'} minHeight={'100vh'}>
@@ -88,7 +98,7 @@ const Register = () => {
                                    onChange={formik.handleChange}/>
                     </Grid>
                     <Grid item xs={12} textAlign={'right'}>
-                        <LoadingButton size="small" color="primary" loading={isLoading} type={'submit'}
+                        <LoadingButton size="small" color="primary" loading={loading} type={'submit'}
                                        loadingPosition="end" className="w-100 mt-3" onClick={() => formik.submitForm()}
                                        endIcon={<LoginSharp/>} variant="contained">
                             Sign In

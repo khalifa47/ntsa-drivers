@@ -1,11 +1,10 @@
-import {Navigate, useLocation} from 'react-router-dom';
-import {useAuth} from '../hooks/useAuth';
+import { Navigate, useLocation } from 'react-router-dom';
+import { auth } from '../firebase';
 
 const Guest = ({component}) => {
-    const {auth} = useAuth();
     const location = useLocation();
 
-    if (auth) {
+    if (auth.currentUser) {
         // Redirect them to the /home page.
 
         let urlIntended = location.state?.from?.pathname || "/dashboard";
