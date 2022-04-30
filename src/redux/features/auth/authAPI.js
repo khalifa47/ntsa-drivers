@@ -1,5 +1,11 @@
 export const authAPI = {
-    login: async (userData) => {
+    login: userData => {
+        localStorage.setItem('auth', JSON.stringify(userData));
+
+        return userData;
+    },
+
+    register: async (userData) => {
         localStorage.setItem('auth', JSON.stringify(userData));
 
         return userData;

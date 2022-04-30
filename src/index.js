@@ -1,5 +1,6 @@
 import React from 'react';
-import './index.css';
+import './assets/css/index.css';
+import 'toastify-js/src/toastify.css';
 import App from './App';
 import { createRoot } from 'react-dom/client';
 import { store } from './redux/store';

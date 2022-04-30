@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { authAPI } from './authAPI';
 
 //  Get user data from localstorage
@@ -12,10 +12,12 @@ const initialState = {
     message: ""
 };
 
-export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
+export const login = createAction('auth/login', async (user, thunkAPI) => {
     try {
-        return await authAPI.login(user);
+        console.log('login');
+        return authAPI.login(user);
     } catch (err) {
+        console.log('err');
         const message = err.response?.data.errors[0].message ||
             (err.response && err.response.data && err.response.data.message) ||
             err.message || err.toString();
@@ -32,6 +34,9 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        register: (state, payload) => {
+            console.log(state, payload);
+        },
         reset: (state) => {
             state.isLoading = false;
             state.isSuccess = false;
@@ -39,28 +44,8 @@ export const authSlice = createSlice({
             state.message = '';
         }
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(login.pending, state => {
-                state.isLoading = true;
-            })
-            .addCase(login.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isSuccess = true;
-                state.user = action.payload;
-            })
-            .addCase(login.rejected, (state, action) => {
-                state.isLoading = false;
-                state.isError = true;
-                state.message = String(action.payload);
-                state.user = null;
-            })
-            .addCase(logout.fulfilled, (state) => {
-                state.user = null;
-            });
-    }
 });
 
-export const {reset} = authSlice.actions;
+export const { reset, register } = authSlice.actions;
 
 export default authSlice.reducer;
