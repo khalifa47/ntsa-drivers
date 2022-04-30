@@ -2,11 +2,9 @@ import { Grid, Paper, TextField } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
-import { lazy } from 'react';
+import { lazy, useState } from 'react';
 import { toast } from '../../utils/helpers';
-import db from '../../firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useState } from 'react';
+import { login } from '../../firebase';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
@@ -14,7 +12,7 @@ const LockOutlined = lazy(() => import('@mui/icons-material/LockOutlined'));
 const LoginSharp = lazy(() => import('@mui/icons-material/LoginSharp'));
 
 const validationSchema = yup.object({
-    email: yup.string().email('Must be a valid email').max(100).required('Email is required.'),
+    national_id: yup.number().required('National ID is required.'),
     password: yup.string().max(20).required('Password is required.')
 });
 
@@ -23,19 +21,21 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
-        initialValues: { email: "", password: "" },
+        initialValues: { national_id: "", password: "" },
         validationSchema: validationSchema,
         onSubmit: async values => {
-            setLoading(true)
+            setLoading(true);
 
-            const q = query(collection(db, "users"), where("national_id", "==", values.national_id));
-            const docs = await getDocs(q);
+            try {
+                await login(values);
 
-            if (!docs.docs.length) return toast({msg: 'Invalid credentials'})
+                navigate('/');
+            } catch (err) {
+                console.error(err);
+                toast({ msg: err.message });
 
-            setLoading(false)
-
-            navigate('/');
+                setLoading(false);
+            }
         }
     });
 
@@ -51,10 +51,10 @@ const Login = () => {
                         <Link to={'/register'}>Sign Up</Link>
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField size={'small'} name={'email'} label="Email address" fullWidth required
-                                   placeholder={'Email address'} value={formik.values.email}
-                                   error={formik.touched.email && Boolean(formik.errors.email)}
-                                   helperText={formik.touched.email && formik.errors.email}
+                        <TextField size={'small'} type={'number'} name={'national_id'} label="National ID" fullWidth
+                                   required placeholder={'National ID'} value={formik.values.national_id}
+                                   error={formik.touched.national_id && Boolean(formik.errors.national_id)}
+                                   helperText={formik.touched.national_id && formik.errors.national_id}
                                    onChange={formik.handleChange}/>
                     </Grid>
                     <Grid item xs={12}>
@@ -64,6 +64,7 @@ const Login = () => {
                                    helperText={formik.touched.password && formik.errors.password}
                                    onChange={formik.handleChange}/>
                     </Grid>
+                    <div id={'recaptcha-container'}/>
                     <Grid item xs={12} textAlign={'right'}>
                         <LoadingButton size="small" color="primary" loading={loading} type={'submit'}
                                        loadingPosition="end" className="w-100 mt-3" onClick={() => formik.submitForm()}

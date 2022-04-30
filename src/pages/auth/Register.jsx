@@ -55,9 +55,9 @@ const Register = () => {
             } catch (err) {
                 console.error(err);
                 toast({ msg: err.message });
-            }
 
-            setLoading(false);
+                setLoading(false);
+            }
         }
     });
 
