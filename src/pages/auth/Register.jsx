@@ -1,24 +1,33 @@
-import { Grid, Paper, TextField } from '@mui/material';
+import { Autocomplete, Grid, Paper, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { lazy, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from '../../utils/helpers';
-import db from '../../firebase';
+import db, { auth, register } from '../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import publicRecords from '../../records.json';
+import map from 'lodash.map';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
 const LockOutlined = lazy(() => import('@mui/icons-material/LockOutlined'));
 const LoginSharp = lazy(() => import('@mui/icons-material/LoginSharp'));
 
+const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+
 const validationSchema = yup.object({
     phone: yup.number().required('Phone number is required.'),
-    blood_group: yup.string().required('Blood group is required.'),
+    blood_group: yup.string().oneOf(bloodGroups, 'Invalid blood group').required('Blood group is required.'),
+    serial_number: yup.number().oneOf(map(publicRecords, 'serial_id'), 'Invalid serial number')
+                      .required('Serial number is required.'),
     email: yup.string().email('Must be a valid email').max(100).required('Email is required.'),
     password: yup.string().max(20).required('Password is required.'),
-    password_confirmation: yup.string().max(20).required('Password confirmation is required.')
+    password_confirmation: yup.string().oneOf([
+        yup.ref('password'),
+        null
+    ], 'Passwords do not match').required('Password confirmation is required')
 });
 
 const Register = () => {
@@ -26,27 +35,28 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
-        initialValues: { phone: '', email: '', blood_group: '', password: '', password_confirmation: '' },
+        initialValues: {
+            phone: '',
+            email: '',
+            blood_group: '',
+            serial_number: '',
+            password: '',
+            password_confirmation: ''
+        },
         validationSchema: validationSchema,
-        onSubmit: async ({ email, blood_group, password }) => {
-            setLoading(true)
-            try {
-                const res = await createUserWithEmailAndPassword(email, password);
-                const user = res.user;
-                await addDoc(collection(db, "users"), {
-                    uid: user.uid,
-                    blood_group,
-                    password,
-                    authProvider: "local",
-                    email,
-                });
+        onSubmit: async values => {
+            setLoading(true);
 
-                navigate('/login')
+            try {
+                await register(values)
+
+                navigate('/');
             } catch (err) {
                 console.error(err);
-                toast({ msg:err.message });
+                toast({ msg: err.message });
             }
-            setLoading(false)
+
+            setLoading(false);
         }
     });
 
@@ -62,21 +72,33 @@ const Register = () => {
                         <Link to={'/login'}>Sign In</Link>
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField size={'small'} name={'phone'} label="Phone number" fullWidth required
+                        <TextField size={'small'} type={'number'} name={'serial_number'} label="Serial Number" fullWidth
+                                   required placeholder={'Serial number'} value={formik.values.serial_number}
+                                   error={formik.touched.serial_number && Boolean(formik.errors.serial_number)}
+                                   helperText={formik.touched.serial_number && formik.errors.serial_number}
+                                   onChange={formik.handleChange}/>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Autocomplete name={'blood_group'} options={bloodGroups} freeSolo
+                                      onChange={(event, newValue) => {
+                                          formik.setFieldValue('blood_group', newValue, true);
+                                      }} renderInput={(params) => (
+                            <TextField {...params} size={'small'} label="Blood Group"
+                                       value={formik.values.blood_group} required placeholder={'Blood group'}
+                                       error={formik.touched.blood_group && Boolean(formik.errors.blood_group)}
+                                       helperText={formik.touched.blood_group && formik.errors.blood_group}/>
+                        )}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField size={'small'} name={'phone'} label="Phone Number" fullWidth required
                                    placeholder={'Phone number'} value={formik.values.phone}
                                    error={formik.touched.phone && Boolean(formik.errors.phone)}
                                    helperText={formik.touched.phone && formik.errors.phone}
                                    onChange={formik.handleChange}/>
                     </Grid>
-                    <Grid item xs={6}>
-                        <TextField size={'small'} name={'blood_group'} label="Blood group" fullWidth required
-                                   placeholder={'Blood group'} value={formik.values.blood_group}
-                                   error={formik.touched.blood_group && Boolean(formik.errors.blood_group)}
-                                   helperText={formik.touched.blood_group && formik.errors.blood_group}
-                                   onChange={formik.handleChange}/>
-                    </Grid>
                     <Grid item xs={12}>
-                        <TextField size={'small'} name={'email'} label="Email address" fullWidth required
+                        <TextField size={'small'} name={'email'} label="Email Address" fullWidth required
                                    placeholder={'Email address'} value={formik.values.email}
                                    error={formik.touched.email && Boolean(formik.errors.email)}
                                    helperText={formik.touched.email && formik.errors.email}

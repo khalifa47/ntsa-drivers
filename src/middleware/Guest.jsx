@@ -7,7 +7,7 @@ const Guest = ({component}) => {
     if (auth.currentUser) {
         // Redirect them to the /home page.
 
-        let urlIntended = location.state?.from?.pathname || "/dashboard";
+        let urlIntended = location.state?.from?.pathname || "/";
         return <Navigate to={urlIntended} replace/>;
     }
 
