@@ -1,10 +1,11 @@
 import Box from "@mui/material/Box";
 import Toolbar from '@mui/material/Toolbar';
 import { useState } from "react";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import { Outlet } from 'react-router-dom';
 
-const Layout = ({ children }) => {
+const MainLayout = ({ children }) => {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -22,10 +23,10 @@ const Layout = ({ children }) => {
             {/* Content */}
             <Box component="main" sx={{ flexGrow: 1, p: 1 }}>
                 <Toolbar />
-                {children}
+                <Outlet/>
             </Box>
         </Box>
     );
 }
 
-export default Layout;
+export default MainLayout;
