@@ -7,12 +7,12 @@ import { parsePhoneNumber } from 'libphonenumber-js';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyArNiQJyg6PgXnZsesyKs4tsckY2NufjFk",
-    authDomain: "fluent-imprint-335817.firebaseapp.com",
-    projectId: "fluent-imprint-335817",
-    storageBucket: "fluent-imprint-335817.appspot.com",
-    messagingSenderId: "894866721271",
-    appId: "1:894866721271:web:2d14d2fb5528f2592806f2"
+    apiKey: "AIzaSyA8tqdM198HE-8TxJ4phhk_rnxTlHe5MRc",
+    authDomain: "ntsa-drivers-e8a6a.firebaseapp.com",
+    projectId: "ntsa-drivers-e8a6a",
+    storageBucket: "ntsa-drivers-e8a6a.appspot.com",
+    messagingSenderId: "736696482990",
+    appId: "1:736696482990:web:7ef31be6ce73d0449f413f"
 };
 
 // Initialize Firebase
