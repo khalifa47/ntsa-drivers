@@ -16,6 +16,7 @@
     "formik": "^2.2.9",
     "libphonenumber-js": "^1.9.52",
     "lodash.map": "^4.6.0",
+    "md5": "^2.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-firebase-hooks": "^5.0.3",

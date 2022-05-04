@@ -4,10 +4,10 @@ import { lazy, useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from '../../utils/helpers';
-import { register } from '../../firebase';
 import publicRecords from '../../records.json';
 import map from 'lodash.map';
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import { register } from '../../redux/features/authAPI';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));

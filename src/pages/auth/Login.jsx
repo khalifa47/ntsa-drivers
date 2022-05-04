@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
 import { lazy, useState } from 'react';
 import { toast } from '../../utils/helpers';
-import { login } from '../../firebase';
+import { login } from '../../redux/features/authAPI';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
