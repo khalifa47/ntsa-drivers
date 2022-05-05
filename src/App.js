@@ -8,10 +8,12 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Middleware from './middleware';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { toast } from './utils/helpers';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './firebase';
+import { setUser } from './redux/features/authSlice';
+import { toast } from './utils/helpers';
 import { PageLoader } from './components/PageLoader';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useDispatch } from 'react-redux';
 
 const theme = createTheme({
     typography: {
@@ -29,6 +31,7 @@ const theme = createTheme({
 });
 
 function App() {
+    const dispatch = useDispatch()
     const [user, loading, error] = useAuthState(auth);
 
     useEffect(() => {
@@ -36,6 +39,7 @@ function App() {
     }, [user, error]);
 
     if (loading) return <PageLoader/>;
+    if(user) dispatch(setUser(user.toJSON()))
 
     return (
         <ThemeProvider theme={theme}>

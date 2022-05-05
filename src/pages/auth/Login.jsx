@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
 import { lazy, useState } from 'react';
 import { toast } from '../../utils/helpers';
-import { login } from '../../firebase';
+import { login } from '../../redux/features/authAPI';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
@@ -42,7 +42,7 @@ const Login = () => {
     return (
         <Grid container alignItems={'center'} justifyContent={'center'} minHeight={'100vh'}>
             <Grid item xs={12} sm={8} md={5} lg={4} xl={3} component={Paper} elevation={1} padding={3}>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} component={'form'}>
                     <Grid item xs={12} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
                         <Grid item display={'flex'} alignItems={'center'}>
                             <Avatar><LockOutlined fontSize={'small'}/></Avatar>
