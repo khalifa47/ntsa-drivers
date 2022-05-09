@@ -29,6 +29,17 @@ const theme = createTheme({
         fontFamily: `${['"Varela Round"', 'cursive',].join(',')}!important`,
     },
     components: {
+        MuiTextField: {
+            defaultProps: {
+                size: 'small'
+            }
+        },
+        MuiLoadingButton: {
+            defaultProps: {
+                size: 'small',
+                variant: 'contained'
+            }
+        },
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {

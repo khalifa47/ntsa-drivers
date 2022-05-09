@@ -47,7 +47,7 @@ const Register = () => {
             password_confirmation: ''
         },
         validateOnChange: true,
-        validationSchema: validationSchema,
+        validationSchema,
         onSubmit: async values => {
             setLoading(true);
 
@@ -69,15 +69,16 @@ const Register = () => {
             <Grid item xs={12} sm={8} md={5} lg={4} component={Paper} elevation={1} padding={3} borderRadius={'1rem'}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                        <Avatar style={{ backgroundColor: theme.palette.primary.main }}><LockOutlined
-                            fontSize={'small'}/></Avatar>
+                        <Avatar style={{ backgroundColor: theme.palette.primary.main }}>
+                            <LockOutlined fontSize={'small'}/>
+                        </Avatar>
                         <h4 style={{ paddingLeft: '1rem' }}>CREATE AN ACCOUNT</h4>
                     </Grid>
                     <Grid item xs={12} textAlign={'center'} marginTop={'.5rem'}>
                         <hr/>
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField size={'small'} type={'number'} name={'serial_number'} label="Serial Number" fullWidth
+                        <TextField type={'number'} name={'serial_number'} label="Serial Number" fullWidth
                                    required placeholder={'Serial number'} value={formik.values.serial_number}
                                    error={formik.touched.serial_number && Boolean(formik.errors.serial_number)}
                                    helperText={formik.touched.serial_number && formik.errors.serial_number}
@@ -88,7 +89,7 @@ const Register = () => {
                                       onChange={(event, newValue) => {
                                           formik.setFieldValue('blood_group', newValue, true);
                                       }} renderInput={(params) => (
-                            <TextField {...params} size={'small'} label="Blood Group" variant={'standard'}
+                            <TextField {...params} label="Blood Group" variant={'standard'}
                                        value={formik.values.blood_group} required placeholder={'Blood group'}
                                        error={formik.touched.blood_group && Boolean(formik.errors.blood_group)}
                                        helperText={formik.touched.blood_group && formik.errors.blood_group}/>
@@ -96,28 +97,28 @@ const Register = () => {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField size={'small'} name={'phone'} label="Phone Number" fullWidth required
+                        <TextField name={'phone'} label="Phone Number" fullWidth required
                                    placeholder={'Phone number'} value={formik.values.phone}
                                    error={formik.touched.phone && Boolean(formik.errors.phone)}
                                    helperText={formik.touched.phone && formik.errors.phone}
                                    onChange={formik.handleChange} variant={'standard'}/>
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField size={'small'} name={'email'} label="Email Address" fullWidth required
+                        <TextField name={'email'} label="Email Address" fullWidth required
                                    placeholder={'Email address'} value={formik.values.email}
                                    error={formik.touched.email && Boolean(formik.errors.email)}
                                    helperText={formik.touched.email && formik.errors.email}
                                    onChange={formik.handleChange} variant={'standard'}/>
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField type={'password'} size={'small'} name={'password'} label="Password" fullWidth
+                        <TextField type={'password'} name={'password'} label="Password" fullWidth
                                    required placeholder={'Password'} value={formik.values.password}
                                    error={formik.touched.password && Boolean(formik.errors.password)}
                                    helperText={formik.touched.password && formik.errors.password}
                                    onChange={formik.handleChange} variant={'standard'}/>
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField type={'password'} size={'small'} name={'password_confirmation'}
+                        <TextField type={'password'} name={'password_confirmation'}
                                    label="Confirm Password" fullWidth
                                    required placeholder={'Confirm password'} value={formik.values.password_confirmation}
                                    error={formik.touched.password_confirmation && Boolean(formik.errors.password_confirmation)}
