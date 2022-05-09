@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import MainLayout from './layouts/MainLayout';
 import Apply from './components/license/Apply';
 import Renew from './components/license/Renew';
 import { Route, Routes } from 'react-router-dom';
 import GuestLayout from './layouts/GuestLayout';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
 import Middleware from './middleware';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { auth } from './firebase';
@@ -15,7 +13,16 @@ import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
 
+const Login = lazy(() => import('./pages/auth/Login'));
+const Register = lazy(() => import('./pages/auth/Register'));
+
 const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#50B376',
+            contrastText: '#fff'
+        }
+    },
     typography: {
         fontFamily: `${['"Varela Round"', 'cursive',].join(',')}!important`,
     },
@@ -31,7 +38,7 @@ const theme = createTheme({
 });
 
 function App() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [user, loading, error] = useAuthState(auth);
 
     useEffect(() => {
@@ -39,7 +46,7 @@ function App() {
     }, [user, error]);
 
     if (loading) return <PageLoader/>;
-    if(user) dispatch(setUser(user.toJSON()))
+    if (user) dispatch(setUser(user.toJSON()));
 
     return (
         <ThemeProvider theme={theme}>

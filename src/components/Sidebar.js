@@ -47,7 +47,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                     options.map((option, i) => (
                         <List key={`option-${i}`}
                             subheader={
-                                <ListSubheader sx={{ background: '#98ffc5', display: 'flex', justifyContent: "space-evenly", alignItems: "center", cursor: "default" }} component="div">
+                                <ListSubheader sx={{ display: 'flex', justifyContent: "space-evenly", alignItems: "center", cursor: "default" }} component="div">
                                     <ListItemIcon>
                                         {option.icon}
                                     </ListItemIcon>
