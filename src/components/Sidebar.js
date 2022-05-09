@@ -17,7 +17,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
     const options = [
         {
             name: 'Account Info',
-            icon: <AccountBoxIcon />,
+            icon: <AccountBoxIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
             suboptions: [
                 <Link to="/my-dl">My Driving License</Link>, 
                 <Link to="/account-management">Account Management</Link>
@@ -25,7 +25,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
         },
         {
             name: 'License',
-            icon: <CreditCardIcon />,
+            icon: <CreditCardIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
             suboptions: [
                 <Link to="/apply-for-smart-dl">Smart Driving License Application</Link>, 
                 <Link to="/renew-dl">Renew License</Link>
@@ -33,9 +33,9 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
         },
         {
             name: 'New Drivers',
-            icon: <AccessibilityNewIcon />,
+            icon: <AccessibilityNewIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
             suboptions: [
-                <Link to="/pdl-application">Appliocation for PDL</Link>, 
+                <Link to="/pdl-application">Application for PDL</Link>,
                 <Link to="/test-booking">Test Booking</Link>
             ]
         }
