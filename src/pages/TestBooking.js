@@ -116,7 +116,6 @@ const TestBooking = () => {
                                                     <TextField {...params} name={'test_date'} fullWidth
                                                                placeholder={'Pick a test date'}/>
                                                 )}/>
-
                             </LocalizationProvider>
                         </Grid>
                         <Grid item md={5} lg={3}>
