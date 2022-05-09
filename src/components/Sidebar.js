@@ -8,8 +8,10 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import { ListItemButton, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
+    const theme = useTheme();
     const drawerWidth = 280;
 
     const options = [
@@ -85,7 +87,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                         boxSizing: 'border-box',
                         pt: '1rem',
                         width: drawerWidth,
-                        background: '#47b376',
+                        background: theme.palette.primary.main,
                         color: "white",
                         '& svg': { color: 'white' }
                     }
