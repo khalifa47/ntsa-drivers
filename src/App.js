@@ -12,6 +12,7 @@ import { toast } from './utils/helpers';
 import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
+import ApplicationForPDL from './pages/ApplicationForPDL';
 
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
@@ -66,7 +67,7 @@ function App() {
                     <Route path="/apply-for-smart-dl" element={<Apply/>}/>
                     <Route path="/renew-dl" element={<Renew/>}/>
                     {/* New Drivers */}
-                    <Route path="/pdl-application" element={<h1>APPLICATION FOR PDL</h1>}/>
+                    <Route path="/pdl-application" element={<ApplicationForPDL/>}/>
                     <Route path="/test-booking" element={<h1>TEST BOOKING</h1>}/>
                     <Route path={'*'} element={<h1>WELCOME</h1>}/>
                 </Route>
