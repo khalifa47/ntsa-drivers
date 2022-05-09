@@ -1,9 +1,9 @@
 import { createUserWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { Password, toast } from '../../utils/helpers';
+import { Password, toast } from '../../../utils/helpers';
 import { parsePhoneNumber } from 'libphonenumber-js';
-import publicRecords from '../../records.json';
+import publicRecords from '../../../records.json';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import db, { auth } from '../../firebase';
+import db, { auth } from '../../../firebase';
 
 const signInWithPhone = async phone => {
     let appVerifier = new RecaptchaVerifier('recaptcha-container', {

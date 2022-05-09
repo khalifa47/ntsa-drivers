@@ -7,15 +7,15 @@ import GuestLayout from './layouts/GuestLayout';
 import Middleware from './middleware';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { auth } from './firebase';
-import { setUser } from './redux/features/authSlice';
+import { setUser } from './redux/features/auth/authSlice';
 import { toast } from './utils/helpers';
 import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
-import ApplicationForPDL from './pages/ApplicationForPDL';
 
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
+const ApplicationForPDL = lazy(() => import('./pages/ApplicationForPDL'));
 
 const theme = createTheme({
     palette: {

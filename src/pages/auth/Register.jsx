@@ -7,7 +7,7 @@ import { toast } from '../../utils/helpers';
 import publicRecords from '../../records.json';
 import map from 'lodash.map';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { register } from '../../redux/features/authAPI';
+import { register } from '../../redux/features/auth/authAPI';
 import { useTheme } from '@mui/material/styles';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
