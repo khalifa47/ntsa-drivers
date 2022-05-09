@@ -5,40 +5,20 @@ import Renew from './components/license/Renew';
 import { Route, Routes } from 'react-router-dom';
 import GuestLayout from './layouts/GuestLayout';
 import Middleware from './middleware';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { auth } from './firebase';
 import { setUser } from './redux/features/auth/authSlice';
 import { toast } from './utils/helpers';
 import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
-import { yellow } from '@mui/material/colors';
 import TestBooking from './pages/TestBooking';
 import MyDl from './pages/MyDl';
+import { theme } from './theme';
 
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
 const ApplicationForPDL = lazy(() => import('./pages/ApplicationForPDL'));
-
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: yellow[800],
-        }
-    },
-    typography: {
-        fontFamily: `${['"Varela Round"', 'cursive',].join(',')}!important`,
-    },
-    components: {
-        MuiOutlinedInput: {
-            styleOverrides: {
-                root: {
-                    padding: 'padding: .3125rem 1rem;!important'
-                }
-            }
-        }
-    }
-});
 
 function App() {
     const dispatch = useDispatch();
