@@ -53,13 +53,13 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                                     <ListItemIcon>
                                         {option.icon}
                                     </ListItemIcon>
-                                    <ListItemText primary={option.name} />
+                                    <ListItemText sx={{'& .MuiListItemText-primary': {fontWeight:'900!important'}}} primary={option.name}/>
                                 </ListSubheader>
                             }
                         >
                             {option.suboptions.map((suboption, i) => (
                                 <ListItemButton key={`sub-option-${i}`} dense={true} >
-                                    <ListItemText  primary={suboption} />
+                                    <ListItemText primary={suboption} />
                                 </ListItemButton>
                             ))}
                         </List>
@@ -104,8 +104,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                         width: drawerWidth,
                         pt: '1rem',
                         top: "70px",
-                        background: '#47b376',
-                        color: "white",
+                        background: 'linear-gradient(rgb(249, 169, 48), rgb(253, 216, 56))',
                         '& svg': { color: 'white' }
                     }
                 }}

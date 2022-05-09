@@ -1,4 +1,4 @@
-import { collection, getDoc, doc, where } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import db from '../../../firebase';
 import { toast } from '../../../utils/helpers';
 
@@ -8,7 +8,6 @@ export const userAPI = {
         const user = await getDoc(docRef);
 
         console.log(uid);
-        console.log(user);
 
         if (!user.exists()) {
             toast({msg: 'User Not Found!'})

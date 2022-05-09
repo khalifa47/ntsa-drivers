@@ -46,6 +46,7 @@ const Register = () => {
             password: '',
             password_confirmation: ''
         },
+        validateOnChange: true,
         validationSchema: validationSchema,
         onSubmit: async values => {
             setLoading(true);
@@ -68,10 +69,13 @@ const Register = () => {
             <Grid item xs={12} sm={8} md={5} lg={4} component={Paper} elevation={1} padding={3} borderRadius={'1rem'}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                        <Avatar style={{backgroundColor:theme.palette.primary.main}}><LockOutlined fontSize={'small'}/></Avatar>
+                        <Avatar style={{ backgroundColor: theme.palette.primary.main }}><LockOutlined
+                            fontSize={'small'}/></Avatar>
                         <h4 style={{ paddingLeft: '1rem' }}>CREATE AN ACCOUNT</h4>
                     </Grid>
-                    <Grid item xs={12} textAlign={'center'} marginTop={'.5rem'}><hr/></Grid>
+                    <Grid item xs={12} textAlign={'center'} marginTop={'.5rem'}>
+                        <hr/>
+                    </Grid>
                     <Grid item xs={6}>
                         <TextField size={'small'} type={'number'} name={'serial_number'} label="Serial Number" fullWidth
                                    required placeholder={'Serial number'} value={formik.values.serial_number}
@@ -125,11 +129,11 @@ const Register = () => {
                         <LoadingButton size="small" color="primary" loading={loading} type={'submit'} fullWidth
                                        loadingPosition="end" className="w-100 mt-3" onClick={() => formik.submitForm()}
                                        endIcon={<LoginSharp/>} variant="contained">
-                            Sign In
+                            Sign Up
                         </LoadingButton>
                     </Grid>
                     <Grid item xs={12} textAlign={'center'}>
-                        Already have an account? <Link to={'/login'} style={{color:'green'}}>Sign In</Link>
+                        Already have an account? <Link to={'/login'} style={{ color: 'green' }}>Sign In</Link>
                     </Grid>
                 </Grid>
             </Grid>

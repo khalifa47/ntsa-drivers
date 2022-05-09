@@ -12,6 +12,8 @@ import { toast } from './utils/helpers';
 import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
+import { yellow } from '@mui/material/colors';
+import TestBooking from './pages/TestBooking';
 
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
@@ -20,8 +22,7 @@ const ApplicationForPDL = lazy(() => import('./pages/ApplicationForPDL'));
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#50B376',
-            contrastText: '#fff'
+            main: yellow[800],
         }
     },
     typography: {
@@ -68,7 +69,7 @@ function App() {
                     <Route path="/renew-dl" element={<Renew/>}/>
                     {/* New Drivers */}
                     <Route path="/pdl-application" element={<ApplicationForPDL/>}/>
-                    <Route path="/test-booking" element={<h1>TEST BOOKING</h1>}/>
+                    <Route path="/test-booking" element={<TestBooking/>}/>
                     <Route path={'*'} element={<h1>WELCOME</h1>}/>
                 </Route>
             </Routes>
