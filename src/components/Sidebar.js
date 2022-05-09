@@ -8,14 +8,16 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import { ListItemButton, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
+    const theme = useTheme();
     const drawerWidth = 280;
 
     const options = [
         {
             name: 'Account Info',
-            icon: <AccountBoxIcon />,
+            icon: <AccountBoxIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
             suboptions: [
                 <Link to="/my-dl">My Driving License</Link>, 
                 <Link to="/account-management">Account Management</Link>
@@ -23,7 +25,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
         },
         {
             name: 'License',
-            icon: <CreditCardIcon />,
+            icon: <CreditCardIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
             suboptions: [
                 <Link to="/apply-for-smart-dl">Smart Driving License Application</Link>, 
                 <Link to="/renew-dl">Renew License</Link>
@@ -31,9 +33,9 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
         },
         {
             name: 'New Drivers',
-            icon: <AccessibilityNewIcon />,
+            icon: <AccessibilityNewIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
             suboptions: [
-                <Link to="/pdl-application">Appliocation for PDL</Link>, 
+                <Link to="/pdl-application">Application for PDL</Link>,
                 <Link to="/test-booking">Test Booking</Link>
             ]
         }
@@ -47,17 +49,17 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                     options.map((option, i) => (
                         <List key={`option-${i}`}
                             subheader={
-                                <ListSubheader sx={{ background: '#98ffc5', display: 'flex', justifyContent: "space-evenly", alignItems: "center", cursor: "default" }} component="div">
+                                <ListSubheader sx={{ display: 'flex', justifyContent: "space-evenly", alignItems: "center", cursor: "default" }} component="div">
                                     <ListItemIcon>
                                         {option.icon}
                                     </ListItemIcon>
-                                    <ListItemText primary={option.name} />
+                                    <ListItemText sx={{'& .MuiListItemText-primary': {fontWeight:'900!important'}}} primary={option.name}/>
                                 </ListSubheader>
                             }
                         >
                             {option.suboptions.map((suboption, i) => (
                                 <ListItemButton key={`sub-option-${i}`} dense={true} >
-                                    <ListItemText  primary={suboption} />
+                                    <ListItemText primary={suboption} />
                                 </ListItemButton>
                             ))}
                         </List>
@@ -85,7 +87,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                         boxSizing: 'border-box',
                         pt: '1rem',
                         width: drawerWidth,
-                        background: '#47b376',
+                        background: theme.palette.primary.main,
                         color: "white",
                         '& svg': { color: 'white' }
                     }
@@ -102,8 +104,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
                         width: drawerWidth,
                         pt: '1rem',
                         top: "70px",
-                        background: '#47b376',
-                        color: "white",
+                        background: 'linear-gradient(rgb(249, 169, 48), rgb(253, 216, 56))',
                         '& svg': { color: 'white' }
                     }
                 }}

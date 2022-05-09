@@ -1,9 +1,9 @@
 import { createUserWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { Password, toast } from '../../utils/helpers';
+import { Password, toast } from '../../../utils/helpers';
 import { parsePhoneNumber } from 'libphonenumber-js';
-import publicRecords from '../../records.json';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import db, { auth } from '../../firebase';
+import publicRecords from '../../../records.json';
+import { addDoc, collection, getDocs, setDoc, doc, query, where } from 'firebase/firestore';
+import db, { auth } from '../../../firebase';
 
 const signInWithPhone = async phone => {
     let appVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -27,17 +27,13 @@ const signInWithPhone = async phone => {
 
 export const register = async ({ email, phone, blood_group, password, serial_number: serial_id }) => {
     const { number } = parsePhoneNumber(phone, 'KE');
-    const isVerifiedPhone = await signInWithPhone(number);
+    const { user } = await signInWithPhone(number);
 
-    if (!isVerifiedPhone) throw new Error('Unable to verify OTP!');
-
-    const res = await createUserWithEmailAndPassword(auth, email, password);
-    const user = res.user;
+    if (!user) throw new Error('Unable to verify OTP!');
 
     let publicData = publicRecords.find(record => record.serial_id === serial_id);
 
-    await addDoc(collection(db, "users"), {
-        uid: user.uid,
+    await setDoc(doc(db, "users", user.uid), {
         ...publicData,
         email, password: Password.hash(password),
         phone: number, blood_group,

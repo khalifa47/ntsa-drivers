@@ -1,4 +1,4 @@
-import { auth } from '../../firebase';
+import { auth } from '../../../firebase';
 import { createSlice } from '@reduxjs/toolkit';
 
 const user = async () => await auth.currentUser;

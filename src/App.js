@@ -1,21 +1,30 @@
-import React, { useEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import MainLayout from './layouts/MainLayout';
 import Apply from './components/license/Apply';
 import Renew from './components/license/Renew';
 import { Route, Routes } from 'react-router-dom';
 import GuestLayout from './layouts/GuestLayout';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
 import Middleware from './middleware';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { auth } from './firebase';
-import { setUser } from './redux/features/authSlice';
+import { setUser } from './redux/features/auth/authSlice';
 import { toast } from './utils/helpers';
 import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
+import { yellow } from '@mui/material/colors';
+import TestBooking from './pages/TestBooking';
+
+const Login = lazy(() => import('./pages/auth/Login'));
+const Register = lazy(() => import('./pages/auth/Register'));
+const ApplicationForPDL = lazy(() => import('./pages/ApplicationForPDL'));
 
 const theme = createTheme({
+    palette: {
+        primary: {
+            main: yellow[800],
+        }
+    },
     typography: {
         fontFamily: `${['"Varela Round"', 'cursive',].join(',')}!important`,
     },
@@ -31,7 +40,7 @@ const theme = createTheme({
 });
 
 function App() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [user, loading, error] = useAuthState(auth);
 
     useEffect(() => {
@@ -39,7 +48,7 @@ function App() {
     }, [user, error]);
 
     if (loading) return <PageLoader/>;
-    if(user) dispatch(setUser(user.toJSON()))
+    if (user) dispatch(setUser(user.toJSON()));
 
     return (
         <ThemeProvider theme={theme}>
@@ -59,8 +68,8 @@ function App() {
                     <Route path="/apply-for-smart-dl" element={<Apply/>}/>
                     <Route path="/renew-dl" element={<Renew/>}/>
                     {/* New Drivers */}
-                    <Route path="/pdl-application" element={<h1>APPLICATION FOR PDL</h1>}/>
-                    <Route path="/test-booking" element={<h1>TEST BOOKING</h1>}/>
+                    <Route path="/pdl-application" element={<ApplicationForPDL/>}/>
+                    <Route path="/test-booking" element={<TestBooking/>}/>
                     <Route path={'*'} element={<h1>WELCOME</h1>}/>
                 </Route>
             </Routes>

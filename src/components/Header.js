@@ -17,8 +17,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
+import { useTheme } from '@mui/material/styles';
 
 const Header = ({ handleDrawerToggle }) => {
+    const theme = useTheme()
     const [anchorElUser, setAnchorElUser] = useState(null);
     const navigate = useNavigate()
 
@@ -43,7 +45,7 @@ const Header = ({ handleDrawerToggle }) => {
                 position: 'fixed',
                 maxHeight: '70px',
                 borderLeft: 'none',
-                background: "#98ffc5"
+                background: theme.palette.primary.main
             }}
         >
             <Container maxWidth="xl">
