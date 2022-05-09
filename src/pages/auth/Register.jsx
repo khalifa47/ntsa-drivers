@@ -8,6 +8,7 @@ import publicRecords from '../../records.json';
 import map from 'lodash.map';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { register } from '../../redux/features/authAPI';
+import { useTheme } from '@mui/material/styles';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
@@ -32,6 +33,7 @@ const validationSchema = yup.object({
 });
 
 const Register = () => {
+    const theme = useTheme();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -66,7 +68,7 @@ const Register = () => {
             <Grid item xs={12} sm={8} md={5} lg={4} component={Paper} elevation={1} padding={3} borderRadius={'1rem'}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                        <Avatar><LockOutlined fontSize={'small'}/></Avatar>
+                        <Avatar style={{backgroundColor:theme.palette.primary.main}}><LockOutlined fontSize={'small'}/></Avatar>
                         <h4 style={{ paddingLeft: '1rem' }}>CREATE AN ACCOUNT</h4>
                     </Grid>
                     <Grid item xs={12} textAlign={'center'} marginTop={'.5rem'}><hr/></Grid>
