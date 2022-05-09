@@ -108,7 +108,7 @@ const TestBooking = () => {
             <Grid item xs={12}>
                 <Paper>
                     <Grid container spacing={2} justifyContent={'center'} padding={'1rem'}>
-                        <Grid item xs={5}>
+                        <Grid item md={5} lg={3}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
                                 <DateTimePicker minDateTime={moment()} shouldDisableDate={enableWedAndFri} label="Test date" value={formik.values.test_date}
                                                 onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
@@ -119,14 +119,14 @@ const TestBooking = () => {
 
                             </LocalizationProvider>
                         </Grid>
-                        <Grid item xs={5}>
+                        <Grid item md={5} lg={3}>
                             <TextField name={'phone'} label="Phone Number" required fullWidth
                                        placeholder={'Phone number'} value={formik.values.phone}
                                        error={formik.touched.phone && Boolean(formik.errors.phone)}
                                        helperText={formik.touched.phone && formik.errors.phone}
                                        onChange={formik.handleChange}/>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item md={6} lg={7}>
                             <LoadingButton fullWidth loadingPosition={'end'} endIcon={<Payments/>}
                                            onClick={() => formik.submitForm()}>
                                 Pay With MPESA
