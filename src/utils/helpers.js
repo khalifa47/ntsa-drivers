@@ -172,39 +172,11 @@ export class MpesaService {
         }
 
         Swal.fire({
-            position: 'top-end',
             icon,
             title,
             text: 'NTSA',
             timer: 3000,
             showConfirmButton
         });
-
-        /*if (ResultCode === 'processing') {
-            this.alert({ sweetText: 'Payment still in process. Please retry after 3 seconds.' });
-        } else if (data.status === 'processed') {
-            Swal.fire({
-                position: 'top-end',
-                icon: data.icon,
-                title: data.message,
-                text: 'RewAd',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        } else if (data.status === 'failed') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Sorry...',
-                text: data.message,
-                footer: '<a href>Report this issue?</a>'
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-                footer: '<a href>Report this issue?</a>'
-            });
-        }*/
     }
 }
