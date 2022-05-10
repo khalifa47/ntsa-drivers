@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { findUserById } from '../redux/features/users/usersSlice';
 import { Avatar, Box, Card, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 
 const CardPro = styled(Card)(({ theme }) => ({
     color: '#5c5a5a',
@@ -31,18 +30,28 @@ const MyDl = () => {
     ];
     const licenseDetails = [
         { field: "License ID", desc: 'DL-1234567' },
-        { field: "Issue Date", desc: '2022-02-15' },
-        { field: "Expiry Date", desc: '2025-02-15' },
         {
-            field: "Licensed Types", desc: (
+            field: "Licenses", desc: (
                 <List sx={{ m: 0, p: 0 }}>
-                    <ListItem disablePadding disableGutters>
-                        <ListItemIcon>
-                            <DirectionsCarIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Class B" />
+                    <ListItem sx={{ background: '#cbcb9f', borderRadius: '2vh', my: 2, p: { xs: 0, sm: 1 } }}>
+                        <ListItemText>
+                            Class: B
+                            <br />
+                            Issue Date: 2022-02-15
+                            <br />
+                            Valid Until: 2025-02-15
+                        </ListItemText>
                     </ListItem>
-                </List>
+                    <ListItem sx={{ background: '#cbcb9f', borderRadius: '2vh', my: 2, p: { xs: 0, sm: 1 } }}>
+                        <ListItemText>
+                            Class: A
+                            <br />
+                            Issue Date: 2022-01-15
+                            <br />
+                            Valid Until: 2025-02-15
+                        </ListItemText>
+                    </ListItem>
+                </List >
             )
         },
     ];
@@ -78,7 +87,7 @@ const MyDl = () => {
             </Grid>
             <Grid item xs={12} lg={6}>
                 <CardPro>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={{ xs: 1, sm: 2 }} columnSpacing={{ xs: 0, sm: 1 }}>
                         {licenseDetails.map(license => (
                             <React.Fragment key={license.field}>
                                 <Grid item xs={6}>
