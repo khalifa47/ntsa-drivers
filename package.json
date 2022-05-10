@@ -14,6 +14,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^14.1.1",
+    "axios": "^0.27.2",
     "firebase": "^9.6.11",
     "formik": "^2.2.9",
     "libphonenumber-js": "^1.9.52",
@@ -27,6 +28,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.5",
+    "sweetalert2": "^11.4.13",
     "toastify-js": "^1.11.2",
     "yup": "^0.32.11"
   },

@@ -1,8 +1,8 @@
-import { createUserWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { Password, toast } from '../../../utils/helpers';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import publicRecords from '../../../records.json';
-import { addDoc, collection, getDocs, setDoc, doc, query, where } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import db, { auth } from '../../../firebase';
 
 const signInWithPhone = async phone => {
