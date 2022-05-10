@@ -1,53 +1,94 @@
 import { useAuth } from '../hooks/useAuth';
 import Grid from "@mui/material/Grid";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { findUserById } from '../redux/features/users/usersSlice';
-import { Card } from '@mui/material';
+import { Avatar, Box, Card, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 
 const CardPro = styled(Card)(({ theme }) => ({
-    width: '100%',
-    padding: theme.spacing(1),
+    color: '#5c5a5a',
+    padding: theme.spacing(2),
+    background: 'linear-gradient(to bottom right, rgb(200, 200, 200), rgb(184, 134, 11))'
 }));
 
 const MyDl = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
+    const [userDetails, setUserDetails] = useState({});
+    console.log(userDetails);
+
+    const driverDetails = [
+        { field: "Full Name", desc: userDetails.full_name },
+        { field: "National ID", desc: userDetails.national_id },
+        { field: "Phone", desc: userDetails.phone },
+        { field: "E-mail", desc: userDetails.email },
+        { field: "Date of Birth", desc: userDetails.dob },
+        { field: "Gender", desc: userDetails.gender },
+        { field: "Pin Number", desc: userDetails.pin },
+        { field: "Blood Group", desc: userDetails.blood_group },
+    ];
+    const licenseDetails = [
+        { field: "License ID", desc: 'DL-1234567' },
+        { field: "Issue Date", desc: '2022-02-15' },
+        { field: "Expiry Date", desc: '2025-02-15' },
+        {
+            field: "Licensed Types", desc: (
+                <List sx={{ m: 0, p: 0 }}>
+                    <ListItem disablePadding disableGutters>
+                        <ListItemIcon>
+                            <DirectionsCarIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Class B" />
+                    </ListItem>
+                </List>
+            )
+        },
+    ];
 
     useEffect(() => {
         if (user) {
             dispatch(findUserById(user.uid)).unwrap().then(res => {
-                console.log(res);
+                setUserDetails(res);
             });
         }
     }, [user, dispatch]);
 
     return (
-        <Grid container spacing={3} p={1}>
-            <Grid container item xs={6}>
+        <Grid container spacing={2} p="1rem" pt={{ xs: 2, md: 1 }}>
+            <Grid item xs={12} lg={6}>
                 <CardPro>
-                    <Grid item xs={12}>
-                        Khalifa
-                    </Grid>
-                    <Grid item xs={12}>
-                        Bakari
-                    </Grid>
-                    <Grid item xs={12}>
-                        Fumo
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Avatar sx={{ bgcolor: 'rgb(41, 149, 64)', width: 56, height: 56 }} src='Khalifa Fumo portrait.jpg'>KF</Avatar>
+                    </Box>
+                    <Grid container spacing={1} columnSpacing={{ xs: 0, sm: 1 }}>
+                        {driverDetails.map(driver => (
+                            <React.Fragment key={driver.field}>
+                                <Grid item xs={6}>
+                                    {driver.field}
+                                </Grid>
+                                <Grid item xs={6}>
+                                    {driver.desc}
+                                </Grid>
+                            </React.Fragment>
+                        ))}
                     </Grid>
                 </CardPro>
             </Grid>
-            <Grid container item xs={6}>
+            <Grid item xs={12} lg={6}>
                 <CardPro>
-                    <Grid item xs={12}>
-                        Real
-                    </Grid>
-                    <Grid item xs={12}>
-                        Slim
-                    </Grid>
-                    <Grid item xs={12}>
-                        Shady
+                    <Grid container spacing={2}>
+                        {licenseDetails.map(license => (
+                            <React.Fragment key={license.field}>
+                                <Grid item xs={6}>
+                                    {license.field}
+                                </Grid>
+                                <Grid item xs={6}>
+                                    {license.desc}
+                                </Grid>
+                            </React.Fragment>
+                        ))}
                     </Grid>
                 </CardPro>
             </Grid>
