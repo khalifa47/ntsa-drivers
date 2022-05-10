@@ -1,18 +1,19 @@
 import { Grid, Paper, TextField, Typography } from '@mui/material';
 import { Feed, Payments } from '@mui/icons-material';
-import { useAuth } from '../hooks/useAuth';
-import { useDispatch } from 'react-redux';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import moment from 'moment';
 import { LoadingButton } from '@mui/lab';
-import { isValidPhoneNumber } from 'libphonenumber-js';
+import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
+import axios from 'axios';
+import { useState } from 'react';
+import { toast } from '../utils/helpers';
 
 const validationSchema = yup.object({
     test_date: yup.date().min(moment().toDate(), 'Invalid date').required('Test date is required'),
-    phone: yup.number().test({
+    phone: yup.string().test({
         name: 'is-valid-phone',
         message: 'Invalid phone number',
         test: value => isValidPhoneNumber(String(value), 'KE')
@@ -20,27 +21,35 @@ const validationSchema = yup.object({
 });
 
 const TestBooking = () => {
-    const { user } = useAuth();
-    const dispatch = useDispatch();
-
+    const [loading, setLoading] = useState(false)
     const formik = useFormik({
         initialValues: { test_date: moment(), phone: '', },
         validateOnChange: true,
         validationSchema,
-        onSubmit: values => {
-            console.log(values);
+        onSubmit: async values => {
+            setLoading(true)
+
+            try {
+                const { data } = await axios.post('http://localhost:5001/ntsa-drivers-e8a6a/us-central1/api/mpesa/initiate-stk', {
+                    phone: parsePhoneNumber(String(values.phone), 'KE').number,
+                    amount: 1
+                });
+                console.log(data);
+            } catch (err) {
+                console.error(err)
+
+                const msg = (err.response?.data?.errors && err.response?.data?.errors[0].message) ||
+                    (err.response && err.response.data && err.response.data.message) ||
+                    err.message || err.toString();
+
+                toast({msg})
+            }
+
+            setLoading(false)
         }
     });
 
-    const enableWedAndFri = date => [0, 1, 2, 4, 6].includes(date.day())
-
-    // useEffect(() => {
-    //     if (user) {
-    //         dispatch(findUserById(user.uid)).unwrap().then(res => {
-    //             console.log(res);
-    //         });
-    //     }
-    // }, [user, dispatch]);
+    const enableWedAndFri = date => [0, 1, 2, 4, 6].includes(date.day());
 
     return (
         <Grid container spacing={2}>
@@ -110,7 +119,8 @@ const TestBooking = () => {
                     <Grid container spacing={2} justifyContent={'center'} padding={'1rem'}>
                         <Grid item md={5} lg={3}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DateTimePicker minDateTime={moment()} shouldDisableDate={enableWedAndFri} label="Test date" value={formik.values.test_date}
+                                <DateTimePicker minDateTime={moment()} shouldDisableDate={enableWedAndFri}
+                                                label="Test date" value={formik.values.test_date}
                                                 onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
                                                 renderInput={(params) => (
                                                     <TextField {...params} name={'test_date'} fullWidth
@@ -119,14 +129,14 @@ const TestBooking = () => {
                             </LocalizationProvider>
                         </Grid>
                         <Grid item md={5} lg={3}>
-                            <TextField name={'phone'} label="Phone Number" required fullWidth
+                            <TextField name={'phone'} type={'number'} label="Phone Number" required fullWidth
                                        placeholder={'Phone number'} value={formik.values.phone}
                                        error={formik.touched.phone && Boolean(formik.errors.phone)}
                                        helperText={formik.touched.phone && formik.errors.phone}
                                        onChange={formik.handleChange}/>
                         </Grid>
                         <Grid item md={6} lg={7}>
-                            <LoadingButton fullWidth loadingPosition={'end'} endIcon={<Payments/>}
+                            <LoadingButton fullWidth loadingPosition={'end'} loading={loading} endIcon={<Payments/>}
                                            onClick={() => formik.submitForm()}>
                                 Pay With MPESA
                             </LoadingButton>
