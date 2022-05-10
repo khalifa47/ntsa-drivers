@@ -6,10 +6,10 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import moment from 'moment';
 import { LoadingButton } from '@mui/lab';
-import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
-import axios from 'axios';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useState } from 'react';
-import { toast } from '../utils/helpers';
+import { MpesaService } from '../utils/helpers';
+import { useAuth } from '../hooks/useAuth';
 
 const validationSchema = yup.object({
     test_date: yup.date().min(moment().toDate(), 'Invalid date').required('Test date is required'),
@@ -21,31 +21,18 @@ const validationSchema = yup.object({
 });
 
 const TestBooking = () => {
-    const [loading, setLoading] = useState(false)
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(false);
     const formik = useFormik({
         initialValues: { test_date: moment(), phone: '', },
         validateOnChange: true,
         validationSchema,
         onSubmit: async values => {
-            setLoading(true)
+            setLoading(true);
 
-            try {
-                const { data } = await axios.post('http://localhost:5001/ntsa-drivers-e8a6a/us-central1/api/mpesa/initiate-stk', {
-                    phone: parsePhoneNumber(String(values.phone), 'KE').number,
-                    amount: 1
-                });
-                console.log(data);
-            } catch (err) {
-                console.error(err)
+            await new MpesaService(values, user.uid).init()
 
-                const msg = (err.response?.data?.errors && err.response?.data?.errors[0].message) ||
-                    (err.response && err.response.data && err.response.data.message) ||
-                    err.message || err.toString();
-
-                toast({msg})
-            }
-
-            setLoading(false)
+            setLoading(false);
         }
     });
 
@@ -119,7 +106,7 @@ const TestBooking = () => {
                     <Grid container spacing={2} justifyContent={'center'} padding={'1rem'}>
                         <Grid item md={5} lg={3}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DateTimePicker minDateTime={moment()} shouldDisableDate={enableWedAndFri}
+                                <DateTimePicker minDateTime={moment()} //shouldDisableDate={enableWedAndFri}
                                                 label="Test date" value={formik.values.test_date}
                                                 onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
                                                 renderInput={(params) => (

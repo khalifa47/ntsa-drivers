@@ -7,5 +7,6 @@ const router = Router()
 
 router.post('/mpesa/initiate-stk', validate(MpesaRequest.initiateStk), MpesaController.initiateStk)
 router.post('/mpesa/stk-callback', MpesaController.stkCallback)
+router.post('/mpesa/query-status', validate(MpesaRequest.queryStatus), MpesaController.queryStkStatus)
 
 module.exports = router

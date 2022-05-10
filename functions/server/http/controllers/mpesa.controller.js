@@ -1,4 +1,6 @@
 const { Mpesa } = require('mpesa-api');
+const { setDoc, doc } = require('firebase/firestore');
+const { db } = require('../../../firebase');
 
 const credentials = {
     clientKey: '2TprLATG71anbcwKQyOMezxeDqQgS3uk', // YOUR_CONSUMER_KEY_HERE'
@@ -26,6 +28,8 @@ const MpesaController = {
         }).then(resp => {
             console.log('Callback 1:', resp);
 
+            setDoc(doc(db, "stk_requests", resp.CheckoutRequestID), { ...resp, user_id: body.uid });
+
             res.send(resp);
         }).catch(err => {
             console.log('MpesaError: ', err);
@@ -33,8 +37,33 @@ const MpesaController = {
             res.status(400).send(err.message);
         });
     },
-    stkCallback: ({ body }) => {
-        console.log('Callback 2:', body);
+    stkCallback: async ({ body }, res) => {
+        console.log('Callback 2: ', body);
+
+        const { stkCallback } = body;
+
+        await setDoc(doc(db, "stk_callbacks", stkCallback.CheckoutRequestID), stkCallback);
+
+        res.send({});
+    },
+    queryStkStatus: async ({ body }, res) => {
+        const { checkout_request_id } = body;
+
+        mpesa.lipaNaMpesaQuery({
+            BusinessShortCode: 174379,
+            passKey: "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",
+            CheckoutRequestID: checkout_request_id
+        }).then(resp => {
+            console.log('Query Status:', resp);
+
+            res.send(resp);
+        }).catch(err => {
+            console.log('MpesaError: ', err);
+
+            if(err.data.errorCode) return res.status(200).send(err.data)
+
+            res.status(400).send(err.message);
+        });
     }
 };
 
