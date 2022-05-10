@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { findUserById } from '../redux/features/users/usersSlice';
-import { Avatar, Box, Card, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Avatar, Box, Card, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const CardPro = styled(Card)(({ theme }) => ({
@@ -71,6 +71,7 @@ const MyDl = () => {
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <Avatar sx={{ bgcolor: 'rgb(41, 149, 64)', width: 56, height: 56 }} src='Khalifa Fumo portrait.jpg'>KF</Avatar>
                     </Box>
+                    <Divider light sx={{ my: 1, borderBottomWidth: 3 }} />
                     <Grid container spacing={1} columnSpacing={{ xs: 0, sm: 1 }}>
                         {driverDetails.map(driver => (
                             <React.Fragment key={driver.field}>
