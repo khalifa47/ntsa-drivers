@@ -7,10 +7,8 @@ export const userAPI = {
         const docRef = doc(db, "users", uid);
         const user = await getDoc(docRef);
 
-        console.log(uid);
-
         if (!user.exists()) {
-            toast({msg: 'User Not Found!'})
+            toast({ msg: 'User Not Found!' })
             throw new Error("User Not Found!")
         }
 

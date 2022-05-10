@@ -13,6 +13,7 @@ import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
 import TestBooking from './pages/TestBooking';
+import MyDl from './pages/MyDl';
 import { theme } from './theme';
 
 const Login = lazy(() => import('./pages/auth/Login'));
@@ -27,30 +28,30 @@ function App() {
         if (error) toast({ msg: error.message, type: 'danger' });
     }, [user, error]);
 
-    if (loading) return <PageLoader/>;
+    if (loading) return <PageLoader />;
     if (user) dispatch(setUser(user.toJSON()));
 
     return (
         <ThemeProvider theme={theme}>
             <Routes>
-                <Route element={<Middleware.Guest component={<GuestLayout/>}/>}>
-                    <Route path={'/login'} element={<Login/>}/>
-                    <Route path={'/register'} element={<Register/>}/>
+                <Route element={<Middleware.Guest component={<GuestLayout />} />}>
+                    <Route path={'/login'} element={<Login />} />
+                    <Route path={'/register'} element={<Register />} />
                 </Route>
 
-                <Route element={<Middleware.Auth component={<MainLayout/>}/>}>
-                    <Route path="/" element={<h1>WELCOME</h1>}/>
+                <Route element={<Middleware.Auth component={<MainLayout />} />}>
+                    <Route path="/" element={<h1>WELCOME</h1>} />
 
                     {/* Account Info */}
-                    <Route path="/my-dl" element={<h1>MY DL</h1>}/>
-                    <Route path="/account-management" element={<h1>ACCOUNT MANAGEMENT</h1>}/>
+                    <Route path="/my-dl" element={<MyDl />} />
+                    <Route path="/account-management" element={<h1>ACCOUNT MANAGEMENT</h1>} />
                     {/* License */}
-                    <Route path="/apply-for-smart-dl" element={<Apply/>}/>
-                    <Route path="/renew-dl" element={<Renew/>}/>
+                    <Route path="/apply-for-smart-dl" element={<Apply />} />
+                    <Route path="/renew-dl" element={<Renew />} />
                     {/* New Drivers */}
-                    <Route path="/pdl-application" element={<ApplicationForPDL/>}/>
-                    <Route path="/test-booking" element={<TestBooking/>}/>
-                    <Route path={'*'} element={<h1>WELCOME</h1>}/>
+                    <Route path="/pdl-application" element={<ApplicationForPDL />} />
+                    <Route path="/test-booking" element={<TestBooking />} />
+                    <Route path={'*'} element={<h1>WELCOME</h1>} />
                 </Route>
             </Routes>
         </ThemeProvider>
