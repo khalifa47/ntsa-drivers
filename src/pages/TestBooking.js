@@ -24,7 +24,7 @@ const TestBooking = () => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const formik = useFormik({
-        initialValues: { test_date: moment(), phone: '', },
+        initialValues: { test_date: null, phone: '', },
         validateOnChange: true,
         validationSchema,
         onSubmit: async values => {
@@ -106,7 +106,7 @@ const TestBooking = () => {
                     <Grid container spacing={2} justifyContent={'center'} padding={'1rem'}>
                         <Grid item md={5} lg={3}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DateTimePicker minDateTime={moment()} //shouldDisableDate={enableWedAndFri}
+                                <DateTimePicker minDateTime={moment().add(1,'d')} shouldDisableDate={enableWedAndFri}
                                                 label="Test date" value={formik.values.test_date}
                                                 onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
                                                 renderInput={(params) => (
