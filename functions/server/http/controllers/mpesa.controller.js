@@ -13,7 +13,7 @@ const credentials = {
 const mpesa = new Mpesa(credentials, 'sandbox');
 
 const MpesaController = {
-    initiateStk: async ({ body }, res, next) => {
+    initiateStk: async ({ body }, res) => {
         mpesa.lipaNaMpesaOnline({
             BusinessShortCode: 174379,
             Amount: 1 /* 1000 is an example amount */,
