@@ -134,7 +134,8 @@ const Register = () => {
                         </LoadingButton>
                     </Grid>
                     <Grid item xs={12} textAlign={'center'}>
-                        Already have an account? <Link to={'/login'} style={{ color: 'green' }}>Sign In</Link>
+                        Already have an account?{' '}
+                        <Link to={'/login'} style={{ color: theme.palette.primary.main }}>Sign In</Link>
                     </Grid>
                 </Grid>
             </Grid>

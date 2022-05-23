@@ -73,7 +73,8 @@ const Login = () => {
                         </LoadingButton>
                     </Grid>
                     <Grid item xs={12} textAlign={'center'}>
-                        Don't have an account? <Link to={'/register'} style={{color:'green'}}>Sign Up</Link>
+                        Don't have an account?{' '}
+                        <Link to={'/register'} style={{color:theme.palette.primary.main}}>Sign Up</Link>
                     </Grid>
                 </Grid>
             </Grid>

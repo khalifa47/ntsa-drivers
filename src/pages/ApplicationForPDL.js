@@ -11,15 +11,6 @@ const ApplicationForPDL = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        console.log(user.uid);
-        if (user) {
-            dispatch(findUserById(user.uid)).unwrap().then(res => {
-                console.log(res);
-            });
-        }
-    }, [user, dispatch]);
-
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>

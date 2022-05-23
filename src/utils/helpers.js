@@ -159,10 +159,10 @@ export class MpesaService {
 
         if (errorCode && errorCode === '500.001.1001') {
             return this.alert({ sweetText: 'Payment still in process. Please retry after 3 seconds.' });
-        } else if (ResultCode === 1032) {
+        } else if (ResultCode === "1032") {
             icon = 'info';
             title = 'Payment Cancelled!';
-        } else if (ResultCode === 0) {
+        } else if (ResultCode === "0") {
             icon = 'success';
             title = 'Payment Successful!';
         } else {

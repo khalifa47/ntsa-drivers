@@ -1,4 +1,4 @@
-import { Grid, Paper, TextField, Typography } from '@mui/material';
+import { Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import { Feed, Payments } from '@mui/icons-material';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -10,6 +10,7 @@ import { isValidPhoneNumber } from 'libphonenumber-js';
 import { useState } from 'react';
 import { MpesaService } from '../utils/helpers';
 import { useAuth } from '../hooks/useAuth';
+import { useTheme } from '@mui/material/styles';
 
 const validationSchema = yup.object({
     test_date: yup.date().min(moment().toDate(), 'Invalid date').required('Test date is required'),
@@ -21,16 +22,17 @@ const validationSchema = yup.object({
 });
 
 const TestBooking = () => {
+    const theme = useTheme();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const formik = useFormik({
-        initialValues: { test_date: moment(), phone: '', },
+        initialValues: { test_date: null, phone: '', },
         validateOnChange: true,
         validationSchema,
         onSubmit: async values => {
             setLoading(true);
 
-            await new MpesaService(values, user.uid).init()
+            await new MpesaService(values, user.uid).init();
 
             setLoading(false);
         }
@@ -98,15 +100,15 @@ const TestBooking = () => {
                 </div>
             </Grid>
             <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                <hr/>
+                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
                 Apply
             </Grid>
             <Grid item xs={12}>
-                <Paper>
+                <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
                     <Grid container spacing={2} justifyContent={'center'} padding={'1rem'}>
                         <Grid item md={5} lg={3}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DateTimePicker minDateTime={moment()} //shouldDisableDate={enableWedAndFri}
+                                <DateTimePicker minDateTime={moment().add(1, 'd')} shouldDisableDate={enableWedAndFri}
                                                 label="Test date" value={formik.values.test_date}
                                                 onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
                                                 renderInput={(params) => (

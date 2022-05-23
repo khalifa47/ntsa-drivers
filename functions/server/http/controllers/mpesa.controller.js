@@ -13,14 +13,14 @@ const credentials = {
 const mpesa = new Mpesa(credentials, 'sandbox');
 
 const MpesaController = {
-    initiateStk: async ({ body }, res, next) => {
+    initiateStk: async ({ body }, res) => {
         mpesa.lipaNaMpesaOnline({
             BusinessShortCode: 174379,
             Amount: 1 /* 1000 is an example amount */,
             PartyA: body.phone,
             PartyB: 174379,
             PhoneNumber: body.phone,
-            CallBackURL: "https://92ee-102-140-253-199.ngrok.io/ntsa-drivers-e8a6a/us-central1/api/mpesa/stk-callback",
+            CallBackURL: 'https://d952-102-140-253-199.ngrok.io/ntsa-drivers-e8a6a/us-central1/api/mpesa/stk-callback',
             AccountReference: "Account Reference",
             passKey: "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",
             TransactionType: "CustomerPayBillOnline",
