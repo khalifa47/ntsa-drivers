@@ -87,12 +87,17 @@ export const login = async ({ national_id, password }) => {
     if (!passwordsMatch) return toast({ msg: 'Invalid credentials' });
 
     try {
-        const userCredentials = await signInWithPhone(user.phone);
+        await signInWithPhone(user.phone);
 
-        return { ...userCredentials.user, ...user };
+        localStorage.setItem('user', JSON.stringify(user));
+
+        return user;
     } catch (err) {
         await auth.signOut();
     }
 };
 
-export const logout = async () => await auth.signOut();
+export const logout = async () => {
+    localStorage.removeItem('user')
+    await auth.signOut()
+};

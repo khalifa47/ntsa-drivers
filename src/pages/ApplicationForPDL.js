@@ -23,7 +23,7 @@ const ApplicationForPDL = () => {
     const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
-        initialValues: { phone: Number(user?.phoneNumber), },
+        initialValues: { phone: Number(user?.phone), },
         validateOnChange: true,
         validationSchema,
         onSubmit: async values => {

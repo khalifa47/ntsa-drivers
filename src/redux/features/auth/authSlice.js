@@ -1,7 +1,8 @@
-import { auth } from '../../../firebase';
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { logout } from './authAPI';
 
-const user = async () => await auth.currentUser;
+//  Get user data from localstorage
+const user = JSON.parse(String(localStorage.getItem('user')));
 
 const initialState = {
     user,
@@ -10,6 +11,8 @@ const initialState = {
     isLoading: false,
     message: ""
 };
+
+export const signOut = createAsyncThunk('auth/logout', async () => await logout());
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -24,6 +27,11 @@ export const authSlice = createSlice({
             state.isError = false;
             state.message = '';
         }
+    },
+    extraReducers: builder => {
+        builder.addCase(signOut.fulfilled, (state) => {
+            state.user = null;
+        });
     }
 });
 

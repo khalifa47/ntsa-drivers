@@ -26,7 +26,7 @@ const TestBooking = () => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const formik = useFormik({
-        initialValues: { test_date: null, phone: '', },
+        initialValues: { test_date: null, phone: Number(user?.phone), },
         validateOnChange: true,
         validationSchema,
         onSubmit: async values => {
