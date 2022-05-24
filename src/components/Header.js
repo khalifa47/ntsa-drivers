@@ -81,15 +81,15 @@ const Header = ({ handleDrawerToggle }) => {
                     />
 
                     <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
-                        <Typography sx={{ display: 'flex' }} component={'caption'}>
-                            <Typography component={'caption'} sx={{ display: { xs: 'none', md: 'block' } }}>
+                        <Box sx={{ display: 'flex' }}>
+                            <Typography sx={{ display: { xs: 'none', md: 'block' } }}>
                                 Hello
                             </Typography>
-                            <Typography component={'caption'} sx={{ display: { xs: 'block', md: 'none' } }}>
+                            <Typography sx={{ display: { xs: 'block', md: 'none' } }}>
                                 Hi
                             </Typography>
-                            <Typography component={'caption'} paddingLeft={.5}>{user.full_name}</Typography>
-                        </Typography>
+                            <Typography paddingLeft={.5}>{user.full_name}</Typography>
+                        </Box>
 
                         <Tooltip title="Logout">
                             <IconButton size={'small'} onClick={handleOpenUserMenu}>
