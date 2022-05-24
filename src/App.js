@@ -12,12 +12,14 @@ import { toast } from './utils/helpers';
 import { PageLoader } from './components/PageLoader';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
-import TestBooking from './pages/TestBooking';
-import MyDl from './pages/MyDl';
 import { theme } from './theme';
 
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
+
+const Home = lazy(() => import('./pages/Home'));
+const MyDl = lazy(() => import('./pages/MyDl'));
+const TestBooking = lazy(() => import('./pages/TestBooking'));
 const ApplicationForPDL = lazy(() => import('./pages/ApplicationForPDL'));
 
 function App() {
@@ -40,7 +42,7 @@ function App() {
                 </Route>
 
                 <Route element={<Middleware.Auth component={<MainLayout />} />}>
-                    <Route path="/" element={<h1>WELCOME</h1>} />
+                    <Route path="/" element={<Home/>} />
 
                     {/* Account Info */}
                     <Route path="/my-dl" element={<MyDl />} />

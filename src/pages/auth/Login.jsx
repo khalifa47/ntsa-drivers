@@ -6,6 +6,8 @@ import { lazy, useState } from 'react';
 import { toast } from '../../utils/helpers';
 import { login } from '../../redux/features/auth/authAPI';
 import { useTheme } from '@mui/material/styles';
+import { setUser } from '../../redux/features/auth/authSlice';
+import { useDispatch } from 'react-redux';
 
 const Avatar = lazy(() => import('@mui/material/Avatar'));
 const LoadingButton = lazy(() => import('@mui/lab/LoadingButton'));
@@ -19,6 +21,7 @@ const validationSchema = yup.object({
 
 const Login = () => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -29,7 +32,9 @@ const Login = () => {
             setLoading(true);
 
             try {
-                await login(values);
+                const user = await login(values);
+
+                dispatch(setUser(JSON.stringify(user)));
 
                 navigate('/');
             } catch (err) {

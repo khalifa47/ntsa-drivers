@@ -4,6 +4,7 @@ import { parsePhoneNumber } from 'libphonenumber-js';
 import publicRecords from '../../../records.json';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import db, { auth } from '../../../firebase';
+import Swal from 'sweetalert2';
 
 const signInWithPhone = async phone => {
     let appVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -14,14 +15,43 @@ const signInWithPhone = async phone => {
     try {
         const confirmationRes = await signInWithPhoneNumber(auth, phone, appVerifier);
 
-        let code = prompt('Enter the otp', '');
+        return await Swal.fire({
+            input: 'number',
+            inputLabel: 'One Time Password',
+            inputPlaceholder: 'Kindly enter the OTP sent via SMS.',
+            showLoaderOnConfirm: true,
+            preConfirm: async code => {
+                if (isNaN(code) || code.length !== 6) {
+                    return Swal.showValidationMessage('OTP must be a six digit number.');
+                }
 
-        if (code === null) return false;
+                try {
+                    return await confirmationRes.confirm(code);
+                } catch (err) {
+                    if (err.code === "auth/invalid-verification-code") {
+                        return Swal.showValidationMessage('Invalid OTP');
+                    }
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then(result => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    toast: true,
+                    position: 'bottom-end',
+                    icon: 'success',
+                    title: 'Sign In Successful',
+                    text: 'NTSA',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
 
-        return await confirmationRes.confirm(code);
+                return result.value;
+            }
+        });
     } catch (err) {
         console.log(err);
-        toast({ msg: 'Unable to complete registration!' });
+        toast({ msg: 'Unable to complete authentication!' });
     }
 };
 
@@ -59,7 +89,7 @@ export const login = async ({ national_id, password }) => {
     try {
         const userCredentials = await signInWithPhone(user.phone);
 
-        return userCredentials.user;
+        return { ...userCredentials.user, ...user };
     } catch (err) {
         await auth.signOut();
     }

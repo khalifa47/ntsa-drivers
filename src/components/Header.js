@@ -18,17 +18,21 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useTheme } from '@mui/material/styles';
+import { useAuth } from 'hooks/useAuth';
 
 const Header = ({ handleDrawerToggle }) => {
-    const theme = useTheme()
+    const theme = useTheme();
+    const { user } = useAuth();
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+    console.log(user);
 
     const signOut = async () => {
-        await auth.signOut()
+        await auth.signOut();
 
-        navigate('/login')
-    }
+        navigate('/login');
+    };
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -59,7 +63,7 @@ const Header = ({ handleDrawerToggle }) => {
                             onClick={handleDrawerToggle}
                             color="inherit"
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                     </Box>
 
@@ -73,9 +77,11 @@ const Header = ({ handleDrawerToggle }) => {
                     />
 
                     <Box sx={{ flexGrow: 0 }}>
+                        <Typography>Hello</Typography>
+
                         <Tooltip title="Logout">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar />
+                                <Avatar/>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -95,7 +101,7 @@ const Header = ({ handleDrawerToggle }) => {
                             onClose={handleCloseUserMenu}
                         >
                             <MenuItem onClick={signOut}>
-                                <ListItemIcon sx={{ color: 'rgb(230, 62, 0)' }}><LogoutIcon /></ListItemIcon>
+                                <ListItemIcon sx={{ color: 'rgb(230, 62, 0)' }}><LogoutIcon/></ListItemIcon>
                                 <ListItemText>
                                     <Typography sx={{ mx: 1 }}>Logout</Typography>
                                 </ListItemText>
@@ -106,6 +112,6 @@ const Header = ({ handleDrawerToggle }) => {
             </Container>
         </AppBar>
     );
-}
+};
 
 export default Header;
