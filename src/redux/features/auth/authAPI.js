@@ -87,9 +87,9 @@ export const login = async ({ national_id, password }) => {
     if (!passwordsMatch) return toast({ msg: 'Invalid credentials' });
 
     try {
-        await signInWithPhone(user.phone);
+        const userCreds = await signInWithPhone(user.phone);
 
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify({ ...user, uid: userCreds.user.uid }));
 
         return user;
     } catch (err) {
@@ -98,6 +98,6 @@ export const login = async ({ national_id, password }) => {
 };
 
 export const logout = async () => {
-    localStorage.removeItem('user')
-    await auth.signOut()
+    localStorage.removeItem('user');
+    await auth.signOut();
 };

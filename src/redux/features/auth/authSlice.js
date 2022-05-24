@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { logout } from './authAPI';
 
 //  Get user data from localstorage
-const user = JSON.parse(String(localStorage.getItem('user')));
+const user = JSON.parse(localStorage.getItem('user'));
 
 const initialState = {
     user,
