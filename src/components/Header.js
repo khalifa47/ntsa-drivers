@@ -72,15 +72,27 @@ const Header = ({ handleDrawerToggle }) => {
                         src="logo.png"
                         alt="logo"
                         sx={{
-                            width: "160px"
+                            width: {
+                                xs: "70px",
+                                md: "100px",
+                                lg: "160px"
+                            }
                         }}
                     />
 
                     <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
-                        <Typography>Hello {user.full_name} </Typography>
+                        <Typography sx={{ display: 'flex' }} component={'caption'}>
+                            <Typography component={'caption'} sx={{ display: { xs: 'none', md: 'block' } }}>
+                                Hello
+                            </Typography>
+                            <Typography component={'caption'} sx={{ display: { xs: 'block', md: 'none' } }}>
+                                Hi
+                            </Typography>
+                            <Typography component={'caption'} paddingLeft={.5}>{user.full_name}</Typography>
+                        </Typography>
 
                         <Tooltip title="Logout">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml:1 }}>
+                            <IconButton size={'small'} onClick={handleOpenUserMenu}>
                                 <Avatar/>
                             </IconButton>
                         </Tooltip>
