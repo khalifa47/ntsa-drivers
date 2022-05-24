@@ -1,4 +1,4 @@
-import { Divider, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Autocomplete, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import { Feed, Payments } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -9,7 +9,20 @@ import { MpesaService } from '../utils/helpers';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '@mui/material/styles';
 
+const classesOfVehicles = [
+    'A - Motorcycle',
+    'B - Light Vehicle',
+    'C - Light Truck',
+    'D - PSV',
+    'E - Heavy Truck',
+    'F - Persons with Disability',
+    'H - Industrial, Construction & Agricultural',
+];
+
 const validationSchema = yup.object({
+    class: yup.string()
+              .oneOf(Object.values(classesOfVehicles).map(r => r[0]), 'Invalid blood group')
+              .required('Class of vehicle is required.'),
     phone: yup.string().test({
         name: 'is-valid-phone',
         message: 'Invalid phone number',
@@ -23,7 +36,7 @@ const ApplicationForPDL = () => {
     const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
-        initialValues: { phone: Number(user?.phone), },
+        initialValues: { class: '', phone: Number(user?.phone), },
         validateOnChange: true,
         validationSchema,
         onSubmit: async values => {
@@ -83,14 +96,26 @@ const ApplicationForPDL = () => {
                 <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
                     <Grid container spacing={2} justifyContent={'center'} alignItems={'center'} padding={'1rem'}
                           component={'form'} onSubmit={formik.handleSubmit}>
-                        <Grid item md={12} lg={3}>
+                        <Grid item xs={12} lg={6}>
+                            <Autocomplete name={'class'} options={Object.values(classesOfVehicles)
+                                                                        .map(r => ({ label: r, value: r[0] }))} freeSolo
+                                          onChange={(event, { value }) => {
+                                              formik.setFieldValue('class', value, true);
+                                          }} renderInput={(params) => (
+                                <TextField {...params} label="Class of vehicle"
+                                           value={formik.values.class} required placeholder={'Class of vehicle'}
+                                           error={formik.touched.class && Boolean(formik.errors.class)}
+                                           helperText={formik.touched.class && formik.errors.class}/>
+                            )}/>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
                             <TextField name={'phone'} type={'number'} label="Phone Number" required fullWidth
                                        placeholder={'Phone number'} value={formik.values.phone}
                                        error={formik.touched.phone && Boolean(formik.errors.phone)}
                                        helperText={formik.touched.phone && formik.errors.phone}
                                        onChange={formik.handleChange}/>
                         </Grid>
-                        <Grid item md={12} lg={7}>
+                        <Grid item xs={12}>
                             <LoadingButton type={'submit'} fullWidth loadingPosition={'end'} loading={loading}
                                            endIcon={<Payments/>}
                                            onClick={() => formik.submitForm()}>
