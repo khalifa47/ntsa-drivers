@@ -35,19 +35,7 @@ const signInWithPhone = async phone => {
             },
             allowOutsideClick: () => !Swal.isLoading()
         }).then(result => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    toast: true,
-                    position: 'bottom-end',
-                    icon: 'success',
-                    title: 'Sign In Successful',
-                    text: 'NTSA',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-
-                return result.value;
-            }
+            if (result.isConfirmed) return result.value;
         });
     } catch (err) {
         console.log(err);
@@ -76,6 +64,16 @@ export const register = async ({ email, phone, blood_group, password, serial_num
         authProvider: "local",
     });
 
+    await Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'success',
+        title: 'Registration Successful!',
+        text: 'NTSA',
+        timer: 3000,
+        showConfirmButton: false
+    });
+
     return user;
 };
 
@@ -95,6 +93,16 @@ export const login = async ({ national_id, password }) => {
         const userCreds = await signInWithPhone(user.phone);
 
         localStorage.setItem('user', JSON.stringify({ ...user, uid: userCreds.user.uid }));
+
+        await Swal.fire({
+            toast: true,
+            position: 'bottom-end',
+            icon: 'success',
+            title: 'Sign In Successful!',
+            text: 'NTSA',
+            timer: 3000,
+            showConfirmButton: false
+        });
 
         return user;
     } catch (err) {
