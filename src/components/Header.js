@@ -82,12 +82,8 @@ const Header = ({ handleDrawerToggle }) => {
 
                     <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex' }}>
-                            <Typography sx={{ display: { xs: 'none', md: 'block' } }}>
-                                Hello
-                            </Typography>
-                            <Typography sx={{ display: { xs: 'block', md: 'none' } }}>
-                                Hi
-                            </Typography>
+                            <Typography sx={{ display: { xs: 'none', md: 'block' } }}>Hello</Typography>
+                            <Typography sx={{ display: { xs: 'block', md: 'none' } }}>Hi</Typography>
                             <Typography paddingLeft={.5}>{user.full_name}</Typography>
                         </Box>
 
