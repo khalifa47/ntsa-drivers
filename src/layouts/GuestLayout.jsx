@@ -8,9 +8,7 @@ const GuestLayout = () => {
 
     return (
         <div style={{ backgroundColor: theme.palette.primary.main }}>
-            <Suspense fallback={<PageLoader/>}>
-                <Outlet/>
-            </Suspense>
+            <Suspense fallback={<PageLoader/>}><Outlet/></Suspense>
         </div>
     );
 };

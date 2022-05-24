@@ -16,19 +16,23 @@ import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
 import { useTheme } from '@mui/material/styles';
+import { useAuth } from 'hooks/useAuth';
+import { useDispatch } from 'react-redux';
+import { signOut } from '../redux/features/auth/authSlice';
 
 const Header = ({ handleDrawerToggle }) => {
-    const theme = useTheme()
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const { user } = useAuth();
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const signOut = async () => {
-        await auth.signOut()
+    const logout = async () => {
+        dispatch(signOut());
 
-        navigate('/login')
-    }
+        navigate('/login');
+    };
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -59,7 +63,7 @@ const Header = ({ handleDrawerToggle }) => {
                             onClick={handleDrawerToggle}
                             color="inherit"
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                     </Box>
 
@@ -72,10 +76,12 @@ const Header = ({ handleDrawerToggle }) => {
                         }}
                     />
 
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+                        <Typography>Hello {user.full_name} </Typography>
+
                         <Tooltip title="Logout">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar />
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml:1 }}>
+                                <Avatar/>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -94,8 +100,8 @@ const Header = ({ handleDrawerToggle }) => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem onClick={signOut}>
-                                <ListItemIcon sx={{ color: 'rgb(230, 62, 0)' }}><LogoutIcon /></ListItemIcon>
+                            <MenuItem onClick={logout}>
+                                <ListItemIcon sx={{ color: 'rgb(230, 62, 0)' }}><LogoutIcon/></ListItemIcon>
                                 <ListItemText>
                                     <Typography sx={{ mx: 1 }}>Logout</Typography>
                                 </ListItemText>
@@ -106,6 +112,6 @@ const Header = ({ handleDrawerToggle }) => {
             </Container>
         </AppBar>
     );
-}
+};
 
 export default Header;

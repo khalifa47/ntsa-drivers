@@ -1,10 +1,11 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { auth } from '../firebase';
+import { useAuth } from '../hooks/useAuth';
 
 const Guest = ({component}) => {
+    const { user } = useAuth();
     const location = useLocation();
 
-    if (auth.currentUser) {
+    if (user) {
         // Redirect them to the /home page.
 
         let urlIntended = location.state?.from?.pathname || "/";
