@@ -19,7 +19,6 @@ const MyDl = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const [userDetails, setUserDetails] = useState(null);
-    console.log(userDetails);
 
     const driverDetails = userDetails && [
         { field: "Full Name", desc: userDetails.full_name },
