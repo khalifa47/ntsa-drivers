@@ -7,6 +7,8 @@ import GuestLayout from './layouts/GuestLayout';
 import Middleware from './middleware';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
+import { Grid } from '@mui/material';
+import Box from '@mui/material/Box';
 
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
@@ -40,6 +42,18 @@ function App() {
                     <Route path={'*'} element={<h1>WELCOME</h1>} />
                 </Route>
             </Routes>
+
+            <Grid component={'footer'} container spacing={2} position={'fixed'} justifyContent={'center'} bottom={0}>
+                <Grid item textAlign={'center'} paddingY={1}>
+                    <Box component="img" src="footerLogo.png" alt="logo" sx={{
+                        width: {
+                            xs: "10rem",
+                            md: "15rem",
+                            lg: "20rem"
+                        }
+                    }}/>
+                </Grid>
+            </Grid>
         </ThemeProvider>
     );
 }

@@ -56,6 +56,11 @@ const signInWithPhone = async phone => {
 };
 
 export const register = async ({ email, phone, blood_group, password, serial_number: serial_id }) => {
+    const q = query(collection(db, "users"), where("serial_id", "==", Number(serial_id)));
+    const docs = await getDocs(q);
+
+    if (docs.docs.length) return toast({ msg: 'Your account already exists. Kindly Sign In.' });
+
     const { number } = parsePhoneNumber(phone, 'KE');
     const { user } = await signInWithPhone(number);
 
