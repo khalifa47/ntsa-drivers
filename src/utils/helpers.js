@@ -4,7 +4,7 @@ import axios from 'axios';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import Swal from 'sweetalert2';
 import db from '../firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 import moment from 'moment';
 
 export const toast = data => {
@@ -155,7 +155,7 @@ export class MpesaService {
         });
     };
 
-    confirmResponse(resp) {
+    async confirmResponse(resp) {
         console.log(resp);
 
         const { ResultCode, errorCode } = resp;
@@ -170,7 +170,7 @@ export class MpesaService {
         } else if (ResultCode === "0") {
             icon = 'success';
             title = 'Payment Successful!';
-            setDoc(doc(db, `licenses/${this.uid}`), {
+            await addDoc(collection(db, `licenses/${this.uid}/classes`), {
                 type: 'pdl',
                 class: this.class,
                 issueDate: moment().format('MMMM Do YYYY'),

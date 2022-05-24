@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { findUserById } from '../redux/features/users/usersSlice';
 import { Avatar, Box, Card, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
+import { collection, getDocs } from 'firebase/firestore';
+import db from '../firebase';
 
 const CardPro = styled(Card)(({ theme }) => ({
     color: '#000',
@@ -17,7 +19,8 @@ const MyDl = () => {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const [userDetails, setUserDetails] = useState({});
-    console.log(userDetails);
+
+    const [licenses, setLicenses] = useState([]);
 
     const driverDetails = [
         { field: "Full Name", desc: userDetails.full_name },
@@ -34,24 +37,17 @@ const MyDl = () => {
         {
             field: "Licenses", desc: (
                 <List sx={{ m: 0, p: 0 }}>
-                    <ListItem sx={{ background: '#cbcb9f', borderRadius: '2vh', my: 2, p: { xs: 0, sm: 1 } }}>
-                        <ListItemText>
-                            Class: B
-                            <br />
-                            Issue Date: 2022-02-15
-                            <br />
-                            Valid Until: 2025-02-15
-                        </ListItemText>
-                    </ListItem>
-                    <ListItem sx={{ background: '#cbcb9f', borderRadius: '2vh', my: 2, p: { xs: 0, sm: 1 } }}>
-                        <ListItemText>
-                            Class: A
-                            <br />
-                            Issue Date: 2022-01-15
-                            <br />
-                            Valid Until: 2025-02-15
-                        </ListItemText>
-                    </ListItem>
+                    {licenses?.map(license => (
+                        <ListItem key={license.id} sx={{ background: `${license.data.type === 'pdl' ? '#ffff8d' : '#cbcb9f'}`, borderRadius: '2vh', my: 2, p: { xs: 0, sm: 1 } }}>
+                            <ListItemText>
+                                Class: {license.data.class}
+                                <br />
+                                Issue Date: {license.data.issueDate}
+                                <br />
+                                Valid Until: {license.data.validUntil}
+                            </ListItemText>
+                        </ListItem>
+                    ))}
                 </List >
             )
         },
@@ -62,6 +58,13 @@ const MyDl = () => {
             dispatch(findUserById(user.uid)).unwrap().then(res => {
                 setUserDetails(res);
             });
+
+            getDocs(collection(db, `licenses/${user.uid}/classes`)).then(res => setLicenses(res.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data()
+            }))));
+        } else {
+            setLicenses([]);
         }
     }, [user, dispatch]);
 
