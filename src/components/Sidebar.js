@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Drawer from "@mui/material/Drawer";
@@ -17,50 +17,59 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
     const options = [
         {
             name: 'Account Info',
-            icon: <AccountBoxIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
+            icon: <AccountBoxIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'}/>,
             suboptions: [
-                <Link to="/my-dl">My Driving License</Link>, 
-                <Link to="/account-management">Account Management</Link>
+                { href: '/my-dl', title: 'My Driving License' },
+                { href: '/account-management', title: 'Account Management' },
             ]
         },
         {
             name: 'License',
-            icon: <CreditCardIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
+            icon: <CreditCardIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'}/>,
             suboptions: [
-                <Link to="/apply-for-smart-dl">Smart Driving License Application</Link>, 
-                <Link to="/renew-dl">Renew License</Link>
+                { href: '/apply-for-smart-dl', title: 'Smart Driving License Application' },
+                { href: '/renew-dl', title: 'Renew License' },
             ]
         },
         {
             name: 'New Drivers',
-            icon: <AccessibilityNewIcon style={{backgroundColor:theme.palette.primary.main}} fontSize={'small'}/>,
+            icon: <AccessibilityNewIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'}/>,
             suboptions: [
-                <Link to="/pdl-application">Application for PDL</Link>,
-                <Link to="/test-booking">Test Booking</Link>
+                { href: '/pdl-application', title: 'Application for PDL' },
+                { href: '/test-booking', title: 'Test Booking' }
             ]
         }
     ];
 
     const drawer = (
         <div>
-            <Toolbar sx={{ display: { xs: 'block', md: 'none' }, height: "70px" }} />
+            <Toolbar sx={{ display: { xs: 'block', md: 'none' }, height: "70px" }}/>
             <Box sx={{ overflow: 'auto' }}>
                 {
                     options.map((option, i) => (
                         <List key={`option-${i}`}
-                            subheader={
-                                <ListSubheader sx={{ display: 'flex', justifyContent: "space-evenly", alignItems: "center", cursor: "default" }} component="div">
-                                    <ListItemIcon>
-                                        {option.icon}
-                                    </ListItemIcon>
-                                    <ListItemText sx={{'& .MuiListItemText-primary': {fontWeight:'900!important'}}} primary={option.name}/>
-                                </ListSubheader>
-                            }
+                              subheader={
+                                  <ListSubheader sx={{
+                                      display: 'flex',
+                                      justifyContent: "space-evenly",
+                                      alignItems: "center",
+                                      cursor: "default"
+                                  }} component="div">
+                                      <ListItemIcon>
+                                          {option.icon}
+                                      </ListItemIcon>
+                                      <ListItemText
+                                          sx={{ '& .MuiListItemText-primary': { fontWeight: '900!important' } }}
+                                          primary={option.name}/>
+                                  </ListSubheader>
+                              }
                         >
                             {option.suboptions.map((suboption, i) => (
-                                <ListItemButton key={`sub-option-${i}`} dense={true} >
-                                    <ListItemText primary={suboption} />
-                                </ListItemButton>
+                                <Link key={`link-${i}`} to={suboption.href}>
+                                    <ListItemButton key={`sub-option-${i}`} dense>
+                                        <ListItemText primary={suboption.title}/>
+                                    </ListItemButton>
+                                </Link>
                             ))}
                         </List>
                     ))
@@ -114,6 +123,6 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             </Drawer>
         </Box>
     );
-}
+};
 
 export default Sidebar;
