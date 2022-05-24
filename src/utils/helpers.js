@@ -3,11 +3,14 @@ import md5 from 'md5';
 import axios from 'axios';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import Swal from 'sweetalert2';
+import db from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import moment from 'moment';
 
 export const toast = data => {
     let duration = (data.duration ?? 7) * 1000,
-        type     = data.type ?? 'success',
-        close    = data.close ?? true;
+        type = data.type ?? 'success',
+        close = data.close ?? true;
 
     Toastify({
         text: data.msg,
@@ -67,11 +70,13 @@ export class MpesaService {
     checkoutRequestId = null;
     uid = null;
     phone = null;
+    class = null;
     amount = 1;
 
     constructor(values, uid) {
         this.uid = uid;
         this.phone = parsePhoneNumber(String(values.phone), 'KE').number;
+        this.class = values.class;
     }
 
 
@@ -165,6 +170,12 @@ export class MpesaService {
         } else if (ResultCode === "0") {
             icon = 'success';
             title = 'Payment Successful!';
+            setDoc(doc(db, `licenses/${this.uid}`), {
+                type: 'pdl',
+                class: this.class,
+                issueDate: moment().format('MMMM Do YYYY'),
+                validUntil: moment().add(3, 'months').format("MMMM Do YYYY")
+            });
         } else {
             icon = 'warning';
             title = 'Something went wrong!';

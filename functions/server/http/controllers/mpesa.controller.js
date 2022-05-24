@@ -60,7 +60,7 @@ const MpesaController = {
         }).catch(err => {
             console.log('MpesaError: ', err);
 
-            if(err.data.errorCode) return res.status(200).send(err.data)
+            if (err.data.errorCode) return res.status(200).send(err.data)
 
             res.status(400).send(err.message);
         });

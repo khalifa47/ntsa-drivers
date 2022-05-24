@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { findUserById } from '../redux/features/users/usersSlice';
 import { Avatar, Box, Card, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import { PageLoader } from '../components/PageLoader';
 
 const CardPro = styled(Card)(({ theme }) => ({
     color: '#000',
@@ -15,12 +14,12 @@ const CardPro = styled(Card)(({ theme }) => ({
 }));
 
 const MyDl = () => {
-    const theme = useTheme();
     const { user } = useAuth();
     const dispatch = useDispatch();
-    const [userDetails, setUserDetails] = useState(null);
+    const [userDetails, setUserDetails] = useState({});
+    console.log(userDetails);
 
-    const driverDetails = userDetails && [
+    const driverDetails = [
         { field: "Full Name", desc: userDetails.full_name },
         { field: "National ID", desc: userDetails.national_id },
         { field: "Phone", desc: userDetails.phone },
@@ -38,45 +37,45 @@ const MyDl = () => {
                     <ListItem sx={{ background: '#cbcb9f', borderRadius: '2vh', my: 2, p: { xs: 0, sm: 1 } }}>
                         <ListItemText>
                             Class: B
-                            <br/>
+                            <br />
                             Issue Date: 2022-02-15
-                            <br/>
+                            <br />
                             Valid Until: 2025-02-15
                         </ListItemText>
                     </ListItem>
                     <ListItem sx={{ background: '#cbcb9f', borderRadius: '2vh', my: 2, p: { xs: 0, sm: 1 } }}>
                         <ListItemText>
                             Class: A
-                            <br/>
+                            <br />
                             Issue Date: 2022-01-15
-                            <br/>
+                            <br />
                             Valid Until: 2025-02-15
                         </ListItemText>
                     </ListItem>
-                </List>
+                </List >
             )
         },
     ];
 
     useEffect(() => {
         if (user) {
-            dispatch(findUserById(user.uid)).unwrap().then(res => setUserDetails(res));
+            dispatch(findUserById(user.uid)).unwrap().then(res => {
+                setUserDetails(res);
+            });
         }
     }, [user, dispatch]);
 
-    if (!userDetails) return <PageLoader/>;
+    const theme = useTheme()
 
     return (
         <Grid container spacing={2} p="1rem" pt={{ xs: 2, md: 1 }}>
             <Grid item xs={12} lg={6}>
                 <CardPro>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Avatar sx={{ width: 56, height: 56 }} src="coa.png" variant={'rounded'}/>
-                        <Avatar sx={{ bgcolor: 'rgb(41, 149, 64)', width: 56, height: 56 }}
-                                src="Khalifa Fumo portrait.jpg">KF</Avatar>
+                        <Avatar sx={{ width: 56, height: 56 }} src='coa.png' variant={'rounded'} />
+                        <Avatar sx={{ bgcolor: 'rgb(41, 149, 64)', width: 56, height: 56 }} src='Khalifa Fumo portrait.jpg'>KF</Avatar>
                     </Box>
-                    <Divider variant={'middle'} sx={{ my: 2, borderBottomWidth: 3 }}
-                             color={theme.palette.primary.main}/>
+                    <Divider variant={'middle'} sx={{ my: 2, borderBottomWidth: 3 }} color={theme.palette.primary.main} />
                     <Grid container spacing={1} columnSpacing={{ xs: 0, sm: 1 }}>
                         {driverDetails.map(driver => (
                             <React.Fragment key={driver.field}>
@@ -109,6 +108,6 @@ const MyDl = () => {
             </Grid>
         </Grid>
     );
-};
+}
 
 export default MyDl;
