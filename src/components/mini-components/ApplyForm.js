@@ -1,40 +1,41 @@
 import React from 'react';
+import InputIcon from '@mui/icons-material/Input';
 
 const ApplyForm = () => {
     return (
         <form className="w-full max-w-5xl mx-auto">
             {/* Div 1 */}
-            <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="flex flex-wrap -mx-3 mb-10">
                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                            htmlFor="grid-national-id">
                         National ID
                     </label>
                     <input
-                        className="appearance-none block  w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block  w-full border-b-2 border-b-black outine-none py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-national-id" type="number" placeholder="12345678"/>
 
                 </div>
                 <div className="w-full md:w-1/2 px-3">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                            htmlFor="grid-license-number">
-                        License Number
+                        Serial Number
                     </label>
                     <input
-                        className="appearance-none block uppercase w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
-                        id="grid-license-number" type="text" placeholder="AB12DE"/>
+                        className="appearance-none block w-full border-b-2 border-b-black outine-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        id="grid-license-number" type="number" placeholder="123456789"/>
                 </div>
             </div>
 
             {/* Div 2 */}
-            <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="flex flex-wrap -mx-3 mb-10">
                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                            htmlFor="grid-given-name">
                         Given Names
                     </label>
                     <input
-                        className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block w-full border-b-2 border-b-black outine-none py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-given-name" type="text" placeholder="Jane Doe"/>
 
                 </div>
@@ -44,20 +45,20 @@ const ApplyForm = () => {
                         Surname
                     </label>
                     <input
-                        className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block w-full border-b-2 border-b-black outine-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-last-name" type="text" placeholder="McCall"/>
                 </div>
             </div>
 
             {/* Div 3 */}
-            <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="flex flex-wrap -mx-3 mb-10">
                 <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                            htmlFor="grid-nationality">
                         Nationality
                     </label>
                     <input
-                        className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block w-full border-b-2 border-b-black outine-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-nationality" type="text" placeholder="Kenyan"/>
                 </div>
                 <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -65,7 +66,7 @@ const ApplyForm = () => {
                         County of Residence
                     </label>
                     <input
-                        className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block w-full border-b-2 border-b-black outine-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-county" type="text" placeholder="Nairobi"/>
                 </div>
                 <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -74,7 +75,7 @@ const ApplyForm = () => {
                         Phone Number
                     </label>
                     <input
-                        className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block w-full border-b-2 border-b-black outine-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-phone-number" type="text" placeholder="+254712345678"/>
                 </div>
             </div>
@@ -86,7 +87,7 @@ const ApplyForm = () => {
                         Date of Birth
                     </label>
                     <input
-                        className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block w-full border-b-2 border-b-black outine-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-dob" type="date" placeholder="01/01/2000"/>
                 </div>
                 <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -95,7 +96,7 @@ const ApplyForm = () => {
                     </label>
                     <div className="relative">
                         <select
-                            className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                            className="block appearance-none w-full border-b-2 border-b-black outine-none py-3 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                             id="grid-sex">
                             <option>Male</option>
                             <option>Female</option>
@@ -115,16 +116,17 @@ const ApplyForm = () => {
                         Blood Group
                     </label>
                     <input
-                        className="appearance-none block uppercase w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
+                        className="appearance-none block uppercase w-full border-b-2 border-b-black outine-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-green-600"
                         id="grid-blood-group" type="text" placeholder="B+"/>
                 </div>
             </div>
 
             <div className="mx-auto py-8">
                 <button
-                    className="w-full mx-auto file:shadow bg-green-400 hover:bg-green-600 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded duration-700"
+                    className="w-full mx-auto file:shadow bg-amber-400 hover:bg-amber-500 focus:shadow-outline focus:outline-none font-bold py-2 px-4 rounded duration-700"
                     type="button">
-                    Submit
+                    <span className="pr-3">Submit</span>
+                    <InputIcon/>
                 </button>
             </div>
 
