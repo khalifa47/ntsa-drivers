@@ -1,6 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from 'firebase/firestore';
-import { getAuth, } from 'firebase/auth';
+const { initializeApp } = require('firebase/app');
+const { getFirestore } = require('firebase/firestore');
+const { getAuth } = require('firebase/auth');
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -15,10 +15,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-export { auth };
-export default db;
+module.exports.auth = getAuth(app);
+module.exports.db = getFirestore(app);
 
 // firebase deploy --only hosting:ntsadrivers

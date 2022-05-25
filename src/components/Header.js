@@ -15,9 +15,20 @@ import Typography from '@mui/material/Typography';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
+import { useTheme } from '@mui/material/styles';
 
 const Header = ({ handleDrawerToggle }) => {
+    const theme = useTheme()
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const navigate = useNavigate()
+
+    const signOut = async () => {
+        await auth.signOut()
+
+        navigate('/login')
+    }
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -34,7 +45,7 @@ const Header = ({ handleDrawerToggle }) => {
                 position: 'fixed',
                 maxHeight: '70px',
                 borderLeft: 'none',
-                background: "#98ffc5"
+                background: theme.palette.primary.main
             }}
         >
             <Container maxWidth="xl">
@@ -83,10 +94,8 @@ const Header = ({ handleDrawerToggle }) => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem>
-                                <ListItemIcon sx={{ color: 'rgb(230, 62, 0)' }}>
-                                    <LogoutIcon />
-                                </ListItemIcon>
+                            <MenuItem onClick={signOut}>
+                                <ListItemIcon sx={{ color: 'rgb(230, 62, 0)' }}><LogoutIcon /></ListItemIcon>
                                 <ListItemText>
                                     <Typography sx={{ mx: 1 }}>Logout</Typography>
                                 </ListItemText>
