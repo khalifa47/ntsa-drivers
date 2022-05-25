@@ -3,14 +3,11 @@ import md5 from 'md5';
 import axios from 'axios';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import Swal from 'sweetalert2';
-import db from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
-import moment from 'moment';
 
 export const toast = data => {
     let duration = (data.duration ?? 7) * 1000,
-        type = data.type ?? 'success',
-        close = data.close ?? true;
+        type     = data.type ?? 'success',
+        close    = data.close ?? true;
 
     Toastify({
         text: data.msg,
@@ -72,6 +69,7 @@ export class MpesaService {
     phone = null;
     class = null;
     amount = 1;
+    onSuccess = () => {}
 
     constructor(values, uid) {
         this.uid = uid;
@@ -88,9 +86,11 @@ export class MpesaService {
                 uid: this.uid
             });
 
-            this.checkoutRequestId = CheckoutRequestID;
+            if (CheckoutRequestID) {
+                this.checkoutRequestId = CheckoutRequestID;
 
-            if (this.checkoutRequestId) this.alert();
+                return await this.alert();
+            }
         } catch (err) {
             console.error(err);
 
@@ -111,7 +111,7 @@ export class MpesaService {
     alert = (data = {}) => {
         let sweetText = data.sweetText ?? "Your request has been received and is being processed. PLEASE ENTER MPESA PIN when prompted, then click OK.";
 
-        Swal.fire({
+        return Swal.fire({
             icon: "info",
             title: "Info",
             text: sweetText,
@@ -137,9 +137,9 @@ export class MpesaService {
                     });
             },
             allowOutsideClick: () => !Swal.isLoading(),
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isDismissed && result.dismiss === Swal.DismissReason.cancel) {
-                Swal.fire({
+                await Swal.fire({
                     position: 'top-end',
                     icon: 'info',
                     title: 'Payment Cancelled',
@@ -148,16 +148,14 @@ export class MpesaService {
                     showConfirmButton: false
                 });
             } else if (result.isConfirmed) {
-                this.confirmResponse(result.value);
+                return await this.confirmResponse(result.value);
             } else {
-                this.fetchStkStatus().then(result => this.confirmResponse(result));
+                return await this.fetchStkStatus().then(async result => await this.confirmResponse(result));
             }
         });
     };
 
     async confirmResponse(resp) {
-        console.log(resp);
-
         const { ResultCode, errorCode } = resp;
 
         let icon, title, showConfirmButton = false;
@@ -170,19 +168,15 @@ export class MpesaService {
         } else if (ResultCode === "0") {
             icon = 'success';
             title = 'Payment Successful!';
-            await addDoc(collection(db, `licenses/${this.uid}/classes`), {
-                type: 'pdl',
-                class: this.class,
-                issueDate: moment().format('MMMM Do YYYY'),
-                validUntil: moment().add(3, 'months').format("MMMM Do YYYY")
-            });
+
+            this.onSuccess()
         } else {
             icon = 'warning';
             title = 'Something went wrong!';
             showConfirmButton = true;
         }
 
-        Swal.fire({
+        await Swal.fire({
             icon,
             title,
             text: 'NTSA',

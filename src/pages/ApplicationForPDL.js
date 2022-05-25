@@ -1,13 +1,16 @@
-import { Autocomplete, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Divider, Grid, LinearProgress, Paper, TextField, Typography } from '@mui/material';
 import { Feed, Payments } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { LoadingButton } from '@mui/lab';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MpesaService } from '../utils/helpers';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '@mui/material/styles';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
+import db from '../firebase';
+import moment from 'moment';
 
 const classesOfVehicles = [
     'A - Motorcycle',
@@ -34,6 +37,8 @@ const ApplicationForPDL = () => {
     const theme = useTheme();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [fetchingPDL, setFetchingPDL] = useState(true);
+    const [pdl, setPDL] = useState(null);
 
     const formik = useFormik({
         initialValues: { class: '', phone: Number(user?.phone), },
@@ -42,11 +47,36 @@ const ApplicationForPDL = () => {
         onSubmit: async values => {
             setLoading(true);
 
-            await new MpesaService(values, user.uid).init();
+            const mpesa = new MpesaService(values, user.uid);
+
+            mpesa.onSuccess = async () => {
+                await addDoc(collection(db, `licenses/${user.uid}/classes`), {
+                    type: 'pdl',
+                    class: values.class,
+                    issueDate: moment().format('MMMM Do YYYY'),
+                    validUntil: moment().add(3, 'months').format("MMMM Do YYYY")
+                });
+            };
+
+            await mpesa.init();
 
             setLoading(false);
         }
     });
+
+    useEffect(() => {
+        getDocs(collection(db, `licenses/${user.uid}/classes`)).then(res => {
+            const activePDL = res.docs.find(doc => {
+                const PDLClass = doc.data();
+
+                return moment(PDLClass.validUntil, 'MMMM Do YYYY').isAfter(moment());
+            });
+
+            if (activePDL) setPDL(activePDL.data());
+
+            setFetchingPDL(false);
+        });
+    }, [user]);
 
     return (
         <Grid container spacing={2}>
@@ -88,43 +118,69 @@ const ApplicationForPDL = () => {
                     licence for three months after filling in all the information correctly and electronic payment.
                 </small>
             </Grid>
-            <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
-                Apply
-            </Grid>
-            <Grid item xs={12}>
-                <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
-                    <Grid container spacing={2} justifyContent={'center'} alignItems={'center'} padding={'1rem'}
-                          component={'form'} onSubmit={formik.handleSubmit}>
-                        <Grid item xs={12} lg={6}>
-                            <Autocomplete name={'class'} options={Object.values(classesOfVehicles)
-                                                                        .map(r => ({ label: r, value: r[0] }))} freeSolo
-                                          onChange={(event, { value }) => {
-                                              formik.setFieldValue('class', value, true);
-                                          }} renderInput={(params) => (
-                                <TextField {...params} label="Class of vehicle"
-                                           value={formik.values.class} required placeholder={'Class of vehicle'}
-                                           error={formik.touched.class && Boolean(formik.errors.class)}
-                                           helperText={formik.touched.class && formik.errors.class}/>
-                            )}/>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                            <TextField name={'phone'} type={'number'} label="Phone Number" required fullWidth
-                                       placeholder={'Phone number'} value={formik.values.phone}
-                                       error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                       helperText={formik.touched.phone && formik.errors.phone}
-                                       onChange={formik.handleChange}/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <LoadingButton type={'submit'} fullWidth loadingPosition={'end'} loading={loading}
-                                           endIcon={<Payments/>}
-                                           onClick={() => formik.submitForm()}>
-                                Pay With MPESA
-                            </LoadingButton>
-                        </Grid>
+
+            {
+                fetchingPDL
+                ? (
+                    <Grid item xs={7} marginX={'auto'} my={5}>
+                        <Box sx={{ width: '100%' }}>
+                            <LinearProgress/>
+                        </Box>
                     </Grid>
-                </Paper>
-            </Grid>
+                ) : pdl ? (
+                    <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                        <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
+                        You currently have an active PDL that expires on {pdl.validUntil}
+                    </Grid>
+                ) : (
+                        <>
+                            <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
+                                Apply
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
+                                    <Grid container spacing={2} justifyContent={'center'} alignItems={'center'}
+                                          padding={'1rem'}
+                                          component={'form'} onSubmit={formik.handleSubmit}>
+                                        <Grid item xs={12} lg={6}>
+                                            <Autocomplete name={'class'} options={Object.values(classesOfVehicles)
+                                                                                        .map(r => ({
+                                                                                            label: r,
+                                                                                            value: r[0]
+                                                                                        }))} freeSolo
+                                                          onChange={(event, { value }) => {
+                                                              formik.setFieldValue('class', value, true);
+                                                          }} renderInput={(params) => (
+                                                <TextField {...params} label="Class of vehicle"
+                                                           value={formik.values.class} required
+                                                           placeholder={'Class of vehicle'}
+                                                           error={formik.touched.class && Boolean(formik.errors.class)}
+                                                           helperText={formik.touched.class && formik.errors.class}/>
+                                            )}/>
+                                        </Grid>
+                                        <Grid item xs={12} lg={6}>
+                                            <TextField name={'phone'} type={'number'} label="Phone Number" required
+                                                       fullWidth
+                                                       placeholder={'Phone number'} value={formik.values.phone}
+                                                       error={formik.touched.phone && Boolean(formik.errors.phone)}
+                                                       helperText={formik.touched.phone && formik.errors.phone}
+                                                       onChange={formik.handleChange}/>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <LoadingButton type={'submit'} fullWidth loadingPosition={'end'}
+                                                           loading={loading}
+                                                           endIcon={<Payments/>}
+                                                           onClick={() => formik.submitForm()}>
+                                                Pay With MPESA
+                                            </LoadingButton>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            </Grid>
+                        </>
+                    )
+            }
         </Grid>
     );
 };
