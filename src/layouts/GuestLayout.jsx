@@ -16,7 +16,7 @@ const GuestLayout = () => {
                              sx={{ display: 'flex', justifyContent: 'center', height: '100%', alignItems: "center" }}>
                         <Box component="img" src="logo-full.png" alt="logo" sx={{
                             width: {
-                                xs: "10rem",
+                                xs: "12.5rem",
                                 md: "15rem",
                                 lg: "20rem"
                             }

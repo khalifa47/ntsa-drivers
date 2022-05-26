@@ -12,7 +12,7 @@ import { addDoc, collection, getDocs } from 'firebase/firestore';
 import db from '../firebase';
 import moment from 'moment';
 
-const classesOfVehicles = [
+const defClassesOfVehicles = [
     'A - Motorcycle',
     'B - Light Vehicle',
     'C - Light Truck',
@@ -24,7 +24,7 @@ const classesOfVehicles = [
 
 const validationSchema = yup.object({
     class: yup.string()
-              .oneOf(Object.values(classesOfVehicles).map(r => r[0]), 'Invalid blood group')
+              .oneOf(Object.values(defClassesOfVehicles).map(r => r[0]), 'Invalid blood group')
               .required('Class of vehicle is required.'),
     phone: yup.string().test({
         name: 'is-valid-phone',
@@ -39,6 +39,7 @@ const ApplicationForPDL = () => {
     const [loading, setLoading] = useState(false);
     const [fetchingPDL, setFetchingPDL] = useState(true);
     const [pdl, setPDL] = useState(null);
+    const [classesOfVehicles, setClassesOfVehicles] = useState(defClassesOfVehicles);
 
     const formik = useFormik({
         initialValues: { class: '', phone: Number(user?.phone), },
@@ -72,11 +73,14 @@ const ApplicationForPDL = () => {
                 return moment(PDLClass.validUntil, 'MMMM Do YYYY').isAfter(moment());
             });
 
-            if (activePDL) setPDL(activePDL.data());
+            if (activePDL) {
+                setPDL(activePDL.data());
+                setClassesOfVehicles(classesOfVehicles.filter(PDLClass => PDLClass[0] !== pdl?.class))
+            }
 
             setFetchingPDL(false);
         });
-    }, [user]);
+    }, [user, pdl?.class]);
 
     return (
         <Grid container spacing={2}>
@@ -127,59 +131,65 @@ const ApplicationForPDL = () => {
                             <LinearProgress/>
                         </Box>
                     </Grid>
-                ) : pdl ? (
-                    <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                        <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
-                        You currently have an active PDL that expires on {pdl.validUntil}
-                    </Grid>
                 ) : (
-                        <>
-                            <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
-                                Apply
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
-                                    <Grid container spacing={2} justifyContent={'center'} alignItems={'center'}
-                                          padding={'1rem'}
-                                          component={'form'} onSubmit={formik.handleSubmit}>
-                                        <Grid item xs={12} lg={6}>
-                                            <Autocomplete name={'class'} options={Object.values(classesOfVehicles)
-                                                                                        .map(r => ({
-                                                                                            label: r,
-                                                                                            value: r[0]
-                                                                                        }))} freeSolo
-                                                          onChange={(event, { value }) => {
-                                                              formik.setFieldValue('class', value, true);
-                                                          }} renderInput={(params) => (
-                                                <TextField {...params} label="Class of vehicle"
-                                                           value={formik.values.class} required
-                                                           placeholder={'Class of vehicle'}
-                                                           error={formik.touched.class && Boolean(formik.errors.class)}
-                                                           helperText={formik.touched.class && formik.errors.class}/>
-                                            )}/>
-                                        </Grid>
-                                        <Grid item xs={12} lg={6}>
-                                            <TextField name={'phone'} type={'number'} label="Phone Number" required
-                                                       fullWidth
-                                                       placeholder={'Phone number'} value={formik.values.phone}
-                                                       error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                                       helperText={formik.touched.phone && formik.errors.phone}
-                                                       onChange={formik.handleChange}/>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <LoadingButton type={'submit'} fullWidth loadingPosition={'end'}
-                                                           loading={loading}
-                                                           endIcon={<Payments/>}
-                                                           onClick={() => formik.submitForm()}>
-                                                Pay With MPESA
-                                            </LoadingButton>
-                                        </Grid>
+                    <>
+                        <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                            <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
+                            {
+                                pdl && (
+                                    <Box color={'silver'}>
+                                        <Typography>
+                                            You currently have an active PDL for the vehicle of class {pdl.class} that
+                                            expires on {pdl.validUntil}
+                                        </Typography>
+                                        <Divider light variant={'middle'} sx={{ my: 2 }}
+                                                 color={theme.palette.primary.main}/>
+                                    </Box>
+                                )
+                            }
+                            Apply
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
+                                <Grid container spacing={2} justifyContent={'center'} alignItems={'center'}
+                                      padding={'1rem'} component={'form'} onSubmit={formik.handleSubmit}>
+                                    <Grid item xs={12} lg={6}>
+                                        <Autocomplete name={'class'} freeSolo
+                                                      options={Object.values(classesOfVehicles).map(r => ({
+                                                          label: r,
+                                                          value: r[0]
+                                                      }))}
+                                                      onChange={(event, { value }) => {
+                                                          formik.setFieldValue('class', value, true);
+                                                      }} renderInput={(params) => (
+                                            <TextField {...params} label="Class of vehicle"
+                                                       value={formik.values.class} required
+                                                       placeholder={'Class of vehicle'}
+                                                       error={formik.touched.class && Boolean(formik.errors.class)}
+                                                       helperText={formik.touched.class && formik.errors.class}/>
+                                        )}/>
                                     </Grid>
-                                </Paper>
-                            </Grid>
-                        </>
-                    )
+                                    <Grid item xs={12} lg={6}>
+                                        <TextField name={'phone'} type={'number'} label="Phone Number" required
+                                                   fullWidth
+                                                   placeholder={'Phone number'} value={formik.values.phone}
+                                                   error={formik.touched.phone && Boolean(formik.errors.phone)}
+                                                   helperText={formik.touched.phone && formik.errors.phone}
+                                                   onChange={formik.handleChange}/>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <LoadingButton type={'submit'} fullWidth loadingPosition={'end'}
+                                                       loading={loading}
+                                                       endIcon={<Payments/>}
+                                                       onClick={() => formik.submitForm()}>
+                                            Pay With MPESA
+                                        </LoadingButton>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </Grid>
+                    </>
+                )
             }
         </Grid>
     );
