@@ -19,13 +19,13 @@ const defClassesOfVehicles = [
     'D - PSV',
     'E - Heavy Truck',
     'F - Persons with Disability',
-    'H - Industrial, Construction & Agricultural',
+    'G - Industrial, Construction & Agricultural',
 ];
 
 const validationSchema = yup.object({
     class: yup.string()
-              .oneOf(Object.values(defClassesOfVehicles).map(r => r[0]), 'Invalid blood group')
-              .required('Class of vehicle is required.'),
+        .oneOf(Object.values(defClassesOfVehicles).map(r => r[0]), 'Invalid class')
+        .required('Class of vehicle is required.'),
     phone: yup.string().test({
         name: 'is-valid-phone',
         message: 'Invalid phone number',
@@ -33,11 +33,11 @@ const validationSchema = yup.object({
     }).required('Phone number is required.')
 });
 
-const ApplicationForPDL = () => {
+const ApplicationForPDL = ({ type }) => {
     const theme = useTheme();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
-    const [fetchingPDL, setFetchingPDL] = useState(true);
+    const [fetchingDL, setFetchingDL] = useState(true);
     const [pdl, setPDL] = useState(null);
     const [classesOfVehicles, setClassesOfVehicles] = useState(defClassesOfVehicles);
 
@@ -52,10 +52,10 @@ const ApplicationForPDL = () => {
 
             mpesa.onSuccess = async () => {
                 await addDoc(collection(db, `licenses/${user.uid}/classes`), {
-                    type: 'pdl',
+                    type: type,
                     class: values.class,
                     issueDate: moment().format('MMMM Do YYYY'),
-                    validUntil: moment().add(3, 'months').format("MMMM Do YYYY")
+                    validUntil: type === 'pdl' ? moment().add(3, 'months').format("MMMM Do YYYY") : moment().add(3, 'years').format("MMMM Do YYYY")
                 });
             };
 
@@ -70,7 +70,7 @@ const ApplicationForPDL = () => {
             const activePDL = res.docs.find(doc => {
                 const PDLClass = doc.data();
 
-                return moment(PDLClass.validUntil, 'MMMM Do YYYY').isAfter(moment());
+                return moment(PDLClass.validUntil, 'MMMM Do YYYY').isAfter(moment()) && PDLClass.type === type;
             });
 
             if (activePDL) {
@@ -78,118 +78,145 @@ const ApplicationForPDL = () => {
                 setClassesOfVehicles(classesOfVehicles.filter(PDLClass => PDLClass[0] !== pdl?.class))
             }
 
-            setFetchingPDL(false);
+            setFetchingDL(false);
         });
-    }, [user, pdl?.class]);
+    }, [user, pdl?.class, type, classesOfVehicles]);
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Grid item display={'flex'} marginY={'.7rem'}>
-                    <Feed fontSize={'small'}/>
-                    <h1 style={{ marginLeft: '.7rem' }}>Application For Provisional Driving Licence</h1>
+                    <Feed fontSize={'small'} />
+                    <h1 style={{ marginLeft: '.7rem' }}>Application For {type === 'pdl' ? 'Provisional' : 'Smart'} Driving Licence</h1>
                 </Grid>
-                <hr/>
+                <hr />
             </Grid>
             <Grid item xs={12}>
-                <Typography fontWeight={'bold'}>STEPS FOR APPLYING FOR PROVISIONAL DRIVING LICENCE:</Typography>
+                <Typography fontWeight={'bold'}>STEPS FOR APPLYING FOR {type === 'pdl' ? 'PROVISIONAL' : 'SMART'} DRIVING LICENCE:</Typography>
                 <div style={{ marginLeft: '1rem' }}>
-                    <small> 1.Apply for approved provisional driving licence with validity of three months so as to
-                        participate in driving school training and learning, and apply for corresponding type of
-                        vehicle.
-                    </small><br/>
-                    <small>
-                        2.After application is approved, waiting for the notification of physical check organized by
-                        testing center.
-                    </small><br/>
-                    <small>
-                        3.Those who passed physical check will participate in driving school training and apply for
-                        testing booking.
-                    </small><br/>
-                    <small>
-                        4.Attend test followed by booked time and place and staff in test center will give the outcome
-                        of test on site.
-                    </small><br/>
-                    <small>
-                        5.Applicants inquire driving licence information after inputting the test outcome by test center
-                        and await printing and issuing.
-                    </small>
-                </div>
+                    {
+                        type === 'pdl' ?
+                            <>
+                                <small> 1.Apply for approved provisional driving licence with validity of three months so as to
+                                    participate in driving school training and learning, and apply for corresponding type of
+                                    vehicle.
+                                </small><br />
+                                <small>
+                                    2.After application is approved, waiting for the notification of physical check organized by
+                                    testing center.
+                                </small><br />
+                                <small>
+                                    3.Those who passed physical check will participate in driving school training and apply for
+                                    testing booking.
+                                </small><br />
+                                <small>
+                                    4.Attend test followed by booked time and place and staff in test center will give the outcome
+                                    of test on site.
+                                </small><br />
+                                <small>
+                                    5.Applicants inquire driving licence information after inputting the test outcome by test center
+                                    and await printing and issuing.
+                                </small>
 
-                <br/>
-                <small>
-                    Here is the first step of applying for Drving Licence, applicants could get provisional driving
-                    licence for three months after filling in all the information correctly and electronic payment.
-                </small>
+                                <br />
+                                <small>
+                                    Here is the first step of applying for Driving Licence, applicants could get provisional driving
+                                    licence for <strong>three months</strong> after filling in all the information correctly and electronic payment of <strong>Ksh. 600</strong>.
+                                </small>
+                            </>
+                            :
+                            <>
+                                <small> 1.Apply for approved smart driving licence with validity of choice and for corresponding type of
+                                    vehicle.
+                                </small><br />
+                                <small>
+                                    2.After payment is approved, your smart DL will be available for viewing on the portal.
+                                </small><br />
+                                <small>
+                                    3.A center can be picked for collection of the physical smart DL.
+                                </small><br />
+                                <small>
+                                    4.Please pick your physical smart DL within a month of application to avoid destruction.
+                                </small>
+
+                                <br />
+                                <small>
+                                    Here is the first step of applying for Driving Licence, applicants could get their smart driving
+                                    licence for <strong>three years</strong> after filling in all the information correctly and electronic payment of <strong>Ksh. 3000</strong>.
+                                </small>
+                            </>
+                    }
+
+                </div>
             </Grid>
 
             {
-                fetchingPDL
-                ? (
-                    <Grid item xs={7} marginX={'auto'} my={5}>
-                        <Box sx={{ width: '100%' }}>
-                            <LinearProgress/>
-                        </Box>
-                    </Grid>
-                ) : (
-                    <>
-                        <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                            <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
-                            {
-                                pdl && (
-                                    <Box color={'silver'}>
-                                        <Typography>
-                                            You currently have an active PDL for the vehicle of class {pdl.class} that
-                                            expires on {pdl.validUntil}
-                                        </Typography>
-                                        <Divider light variant={'middle'} sx={{ my: 2 }}
-                                                 color={theme.palette.primary.main}/>
-                                    </Box>
-                                )
-                            }
-                            Apply
+                fetchingDL
+                    ? (
+                        <Grid item xs={7} marginX={'auto'} my={5}>
+                            <Box sx={{ width: '100%' }}>
+                                <LinearProgress />
+                            </Box>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
-                                <Grid container spacing={2} justifyContent={'center'} alignItems={'center'}
-                                      padding={'1rem'} component={'form'} onSubmit={formik.handleSubmit}>
-                                    <Grid item xs={12} lg={6}>
-                                        <Autocomplete name={'class'} freeSolo
-                                                      options={Object.values(classesOfVehicles).map(r => ({
-                                                          label: r,
-                                                          value: r[0]
-                                                      }))}
-                                                      onChange={(event, { value }) => {
-                                                          formik.setFieldValue('class', value, true);
-                                                      }} renderInput={(params) => (
-                                            <TextField {...params} label="Class of vehicle"
-                                                       value={formik.values.class} required
-                                                       placeholder={'Class of vehicle'}
-                                                       error={formik.touched.class && Boolean(formik.errors.class)}
-                                                       helperText={formik.touched.class && formik.errors.class}/>
-                                        )}/>
+                    ) : (
+                        <>
+                            <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main} />
+                                {
+                                    pdl && (
+                                        <Box color={'silver'}>
+                                            <Typography>
+                                                You currently have an active {type === 'pdl' ? 'PDL' : 'SmartDL'} for the vehicle of class {pdl.class} that
+                                                expires on {pdl.validUntil}
+                                            </Typography>
+                                            <Divider light variant={'middle'} sx={{ my: 2 }}
+                                                color={theme.palette.primary.main} />
+                                        </Box>
+                                    )
+                                }
+                                Apply
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
+                                    <Grid container spacing={2} justifyContent={'center'} alignItems={'center'}
+                                        padding={'1rem'} component={'form'} onSubmit={formik.handleSubmit}>
+                                        <Grid item xs={12} lg={6}>
+                                            <Autocomplete name={'class'} freeSolo
+                                                options={Object.values(classesOfVehicles).map(r => ({
+                                                    label: r,
+                                                    value: r[0]
+                                                }))}
+                                                onChange={(event, { value }) => {
+                                                    formik.setFieldValue('class', value, true);
+                                                }} renderInput={(params) => (
+                                                    <TextField {...params} label="Class of vehicle"
+                                                        value={formik.values.class} required
+                                                        placeholder={'Class of vehicle'}
+                                                        error={formik.touched.class && Boolean(formik.errors.class)}
+                                                        helperText={formik.touched.class && formik.errors.class} />
+                                                )} />
+                                        </Grid>
+                                        <Grid item xs={12} lg={6}>
+                                            <TextField name={'phone'} type={'number'} label="Phone Number" required
+                                                fullWidth
+                                                placeholder={'Phone number'} value={formik.values.phone}
+                                                error={formik.touched.phone && Boolean(formik.errors.phone)}
+                                                helperText={formik.touched.phone && formik.errors.phone}
+                                                onChange={formik.handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <LoadingButton type={'submit'} fullWidth loadingPosition={'end'}
+                                                loading={loading}
+                                                endIcon={<Payments />}
+                                                onClick={() => formik.submitForm()}>
+                                                Pay With MPESA
+                                            </LoadingButton>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12} lg={6}>
-                                        <TextField name={'phone'} type={'number'} label="Phone Number" required
-                                                   fullWidth
-                                                   placeholder={'Phone number'} value={formik.values.phone}
-                                                   error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                                   helperText={formik.touched.phone && formik.errors.phone}
-                                                   onChange={formik.handleChange}/>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <LoadingButton type={'submit'} fullWidth loadingPosition={'end'}
-                                                       loading={loading}
-                                                       endIcon={<Payments/>}
-                                                       onClick={() => formik.submitForm()}>
-                                            Pay With MPESA
-                                        </LoadingButton>
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
-                    </>
-                )
+                                </Paper>
+                            </Grid>
+                        </>
+                    )
             }
         </Grid>
     );

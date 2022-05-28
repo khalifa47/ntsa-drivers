@@ -1,7 +1,5 @@
 import { lazy } from 'react';
 import MainLayout from './layouts/MainLayout';
-import Apply from './components/license/Apply';
-import Renew from './components/license/Renew';
 import { Route, Routes } from 'react-router-dom';
 import GuestLayout from './layouts/GuestLayout';
 import Middleware from './middleware';
@@ -17,6 +15,7 @@ const Home = lazy(() => import('./pages/Home'));
 const MyDl = lazy(() => import('./pages/MyDl'));
 const TestBooking = lazy(() => import('./pages/TestBooking'));
 const ApplicationForPDL = lazy(() => import('./pages/ApplicationForPDL'));
+const Renewal = lazy(() => import('./pages/Renewal'));
 
 function App() {
     return (
@@ -26,18 +25,18 @@ function App() {
                     <Route path={'/login'} element={<Login />} />
                     <Route path={'/register'} element={<Register />} />
                 </Route>
-                
+
                 <Route element={<Middleware.Auth component={<MainLayout />} />}>
-                    <Route path="/" element={<Home/>} />
+                    <Route path="/" element={<Home />} />
 
                     {/* Account Info */}
                     <Route path="/my-dl" element={<MyDl />} />
                     <Route path="/account-management" element={<h1>ACCOUNT MANAGEMENT</h1>} />
                     {/* License */}
-                    <Route path="/apply-for-smart-dl" element={<Apply />} />
-                    <Route path="/renew-dl" element={<Renew />} />
+                    <Route path="/smart-dl-application" element={<ApplicationForPDL type='smart' />} />
+                    <Route path="/renew-dl" element={<Renewal />} />
                     {/* New Drivers */}
-                    <Route path="/pdl-application" element={<ApplicationForPDL />} />
+                    <Route path="/pdl-application" element={<ApplicationForPDL type='pdl' />} />
                     <Route path="/test-booking" element={<TestBooking />} />
                     <Route path={'*'} element={<h1>WELCOME</h1>} />
                 </Route>
@@ -51,7 +50,7 @@ function App() {
                             md: "15rem",
                             lg: "20rem"
                         }
-                    }}/>
+                    }} />
                 </Grid>
             </Grid>
         </ThemeProvider>

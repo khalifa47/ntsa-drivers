@@ -17,7 +17,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
     const options = [
         {
             name: 'Account Info',
-            icon: <AccountBoxIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'}/>,
+            icon: <AccountBoxIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'} />,
             suboptions: [
                 { href: '/my-dl', title: 'My Driving License' },
                 { href: '/account-management', title: 'Account Management' },
@@ -25,15 +25,15 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
         },
         {
             name: 'License',
-            icon: <CreditCardIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'}/>,
+            icon: <CreditCardIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'} />,
             suboptions: [
-                { href: '/apply-for-smart-dl', title: 'Smart Driving License Application' },
+                { href: '/smart-dl-application', title: 'Smart Driving License Application' },
                 { href: '/renew-dl', title: 'Renew License' },
             ]
         },
         {
             name: 'New Drivers',
-            icon: <AccessibilityNewIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'}/>,
+            icon: <AccessibilityNewIcon style={{ backgroundColor: theme.palette.primary.main }} fontSize={'small'} />,
             suboptions: [
                 { href: '/pdl-application', title: 'Application for PDL' },
                 { href: '/test-booking', title: 'Test Booking' }
@@ -43,31 +43,31 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
 
     const drawer = (
         <div>
-            <Toolbar sx={{ display: { xs: 'block', md: 'none' }, height: "70px" }}/>
+            <Toolbar sx={{ display: { xs: 'block', md: 'none' }, height: "70px" }} />
             <Box sx={{ overflow: 'auto' }}>
                 {
                     options.map((option, i) => (
                         <List key={`option-${i}`}
-                              subheader={
-                                  <ListSubheader sx={{
-                                      display: 'flex',
-                                      justifyContent: "space-evenly",
-                                      alignItems: "center",
-                                      cursor: "default"
-                                  }} component="div">
-                                      <ListItemIcon>
-                                          {option.icon}
-                                      </ListItemIcon>
-                                      <ListItemText
-                                          sx={{ '& .MuiListItemText-primary': { fontWeight: '900!important' } }}
-                                          primary={option.name}/>
-                                  </ListSubheader>
-                              }
+                            subheader={
+                                <ListSubheader sx={{
+                                    display: 'flex',
+                                    justifyContent: "space-evenly",
+                                    alignItems: "center",
+                                    cursor: "default"
+                                }} component="div">
+                                    <ListItemIcon>
+                                        {option.icon}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        sx={{ '& .MuiListItemText-primary': { fontWeight: '900!important' } }}
+                                        primary={option.name} />
+                                </ListSubheader>
+                            }
                         >
                             {option.suboptions.map((suboption, i) => (
                                 <Link key={`link-${i}`} to={suboption.href}>
                                     <ListItemButton key={`sub-option-${i}`} dense>
-                                        <ListItemText primary={suboption.title}/>
+                                        <ListItemText primary={suboption.title} />
                                     </ListItemButton>
                                 </Link>
                             ))}

@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { findUserById } from '../redux/features/users/usersSlice';
-import { Avatar, Box, Card, Divider, List, ListItem, ListItemText } from '@mui/material';
+import { Avatar, Box, Card, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../firebase';
@@ -96,16 +96,20 @@ const MyDl = () => {
             <Grid item xs={12} lg={6}>
                 <CardPro>
                     <Grid container spacing={{ xs: 1, sm: 2 }} columnSpacing={{ xs: 0, sm: 1 }}>
-                        {licenseDetails.map(license => (
-                            <React.Fragment key={license.field}>
-                                <Grid item xs={6}>
-                                    {license.field}
-                                </Grid>
-                                <Grid item xs={6}>
-                                    {license.desc}
-                                </Grid>
-                            </React.Fragment>
-                        ))}
+                        {licenses.length !== 0 ?
+                            licenseDetails.map(license => (
+                                <React.Fragment key={license.field}>
+                                    <Grid item xs={6}>
+                                        {license.field}
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        {license.desc}
+                                    </Grid>
+                                </React.Fragment>
+                            ))
+                            :
+                            <Typography variant='h4' textAlign='center' p={3}>YOU DO NOT HAVE AN ACTIVE LICENSE!</Typography>
+                        }
                     </Grid>
                 </CardPro>
             </Grid>
