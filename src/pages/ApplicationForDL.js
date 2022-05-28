@@ -33,12 +33,12 @@ const validationSchema = yup.object({
     }).required('Phone number is required.')
 });
 
-const ApplicationForPDL = ({ type }) => {
+const ApplicationForDL = ({ type }) => {
     const theme = useTheme();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [fetchingDL, setFetchingDL] = useState(true);
-    const [pdl, setPDL] = useState(null);
+    const [dl, setDL] = useState(null);
     const [classesOfVehicles, setClassesOfVehicles] = useState(defClassesOfVehicles);
 
     const formik = useFormik({
@@ -67,20 +67,20 @@ const ApplicationForPDL = ({ type }) => {
 
     useEffect(() => {
         getDocs(collection(db, `licenses/${user.uid}/classes`)).then(res => {
-            const activePDL = res.docs.find(doc => {
-                const PDLClass = doc.data();
+            const activeDL = res.docs.find(doc => {
+                const DLClass = doc.data();
 
-                return moment(PDLClass.validUntil, 'MMMM Do YYYY').isAfter(moment()) && PDLClass.type === type;
+                return moment(DLClass.validUntil, 'MMMM Do YYYY').isAfter(moment()) && DLClass.type === type;
             });
 
-            if (activePDL) {
-                setPDL(activePDL.data());
-                setClassesOfVehicles(classesOfVehicles.filter(PDLClass => PDLClass[0] !== pdl?.class))
+            if (activeDL) {
+                setDL(activeDL.data());
+                setClassesOfVehicles(classesOfVehicles.filter(DLClass => DLClass[0] !== dl?.class))
             }
 
             setFetchingDL(false);
         });
-    }, [user, pdl?.class, type, classesOfVehicles]);
+    }, [user, dl?.class, type, classesOfVehicles]);
 
     return (
         <Grid container spacing={2}>
@@ -163,11 +163,11 @@ const ApplicationForPDL = ({ type }) => {
                             <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
                                 <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main} />
                                 {
-                                    pdl && (
+                                    dl && (
                                         <Box color={'silver'}>
                                             <Typography>
-                                                You currently have an active {type === 'pdl' ? 'PDL' : 'SmartDL'} for the vehicle of class {pdl.class} that
-                                                expires on {pdl.validUntil}
+                                                You currently have an active {type === 'pdl' ? 'PDL' : 'SmartDL'} for the vehicle of class {dl.class} that
+                                                expires on {dl.validUntil}
                                             </Typography>
                                             <Divider light variant={'middle'} sx={{ my: 2 }}
                                                 color={theme.palette.primary.main} />
@@ -222,4 +222,4 @@ const ApplicationForPDL = ({ type }) => {
     );
 };
 
-export default ApplicationForPDL;
+export default ApplicationForDL;

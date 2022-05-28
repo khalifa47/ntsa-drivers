@@ -14,7 +14,7 @@ const Register = lazy(() => import('./pages/auth/Register'));
 const Home = lazy(() => import('./pages/Home'));
 const MyDl = lazy(() => import('./pages/MyDl'));
 const TestBooking = lazy(() => import('./pages/TestBooking'));
-const ApplicationForPDL = lazy(() => import('./pages/ApplicationForPDL'));
+const ApplicationForDL = lazy(() => import('./pages/ApplicationForDL'));
 const Renewal = lazy(() => import('./pages/Renewal'));
 
 function App() {
@@ -33,10 +33,10 @@ function App() {
                     <Route path="/my-dl" element={<MyDl />} />
                     <Route path="/account-management" element={<h1>ACCOUNT MANAGEMENT</h1>} />
                     {/* License */}
-                    <Route path="/smart-dl-application" element={<ApplicationForPDL type='smart' />} />
+                    <Route path="/smart-dl-application" element={<ApplicationForDL type='smart' />} />
                     <Route path="/renew-dl" element={<Renewal />} />
                     {/* New Drivers */}
-                    <Route path="/pdl-application" element={<ApplicationForPDL type='pdl' />} />
+                    <Route path="/pdl-application" element={<ApplicationForDL type='pdl' />} />
                     <Route path="/test-booking" element={<TestBooking />} />
                     <Route path={'*'} element={<h1>WELCOME</h1>} />
                 </Route>
