@@ -61,8 +61,7 @@ const Header = ({ handleDrawerToggle }) => {
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleDrawerToggle}
-                            color="inherit"
-                        >
+                            color="inherit">
                             <MenuIcon/>
                         </IconButton>
                     </Box>

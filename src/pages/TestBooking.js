@@ -1,4 +1,4 @@
-import { Divider, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Box, Divider, Grid, LinearProgress, Paper, TextField, Typography } from '@mui/material';
 import { Feed, Payments } from '@mui/icons-material';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -7,10 +7,12 @@ import * as yup from 'yup';
 import moment from 'moment';
 import { LoadingButton } from '@mui/lab';
 import { isValidPhoneNumber } from 'libphonenumber-js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MpesaService } from '../utils/helpers';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '@mui/material/styles';
+import db from '../firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const validationSchema = yup.object({
     test_date: yup.date().min(moment().toDate(), 'Invalid date').required('Test date is required'),
@@ -25,6 +27,9 @@ const TestBooking = () => {
     const theme = useTheme();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [fetchingBooking, setFetchingBooking] = useState(true);
+    const [booking, setBooking] = useState(null);
+
     const formik = useFormik({
         initialValues: { test_date: null, phone: Number(user?.phone), },
         validateOnChange: true,
@@ -32,13 +37,34 @@ const TestBooking = () => {
         onSubmit: async values => {
             setLoading(true);
 
-            await new MpesaService(values, user.uid).init();
+            const mpesa = new MpesaService(values, user.uid);
+
+            mpesa.onSuccess = async () => {
+                await setDoc(doc(db, "test_bookings", user.uid), {
+                    test_date: values.test_date.format('dddd Do MMM YYYY, h:mm a')
+                });
+            };
+
+            await mpesa.init();
 
             setLoading(false);
         }
     });
 
     const enableWedAndFri = date => [0, 1, 2, 4, 6].includes(date.day());
+
+    useEffect(() => {
+        const docRef = doc(db, 'test_bookings', user.uid);
+
+        getDoc(docRef).then(docSnap => {
+            if (docSnap.exists()) {
+                if (moment(docSnap.data().test_date, 'dddd Do MMM YYYY, h:mm a')
+                    .isAfter(moment())) setBooking(docSnap.data());
+            }
+
+            setFetchingBooking(false);
+        });
+    }, [user]);
 
     return (
         <Grid container spacing={2}>
@@ -99,40 +125,64 @@ const TestBooking = () => {
                     </small>
                 </div>
             </Grid>
-            <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
-                Apply
-            </Grid>
-            <Grid item xs={12}>
-                <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
-                    <Grid container spacing={2} justifyContent={'center'} padding={'1rem'}>
-                        <Grid item md={5} lg={3}>
-                            <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DateTimePicker minDateTime={moment().add(1, 'd')} shouldDisableDate={enableWedAndFri}
-                                                label="Test date" value={formik.values.test_date}
-                                                onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
-                                                renderInput={(params) => (
-                                                    <TextField {...params} name={'test_date'} fullWidth
-                                                               placeholder={'Pick a test date'}/>
-                                                )}/>
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item md={5} lg={3}>
-                            <TextField name={'phone'} type={'number'} label="Phone Number" required fullWidth
-                                       placeholder={'Phone number'} value={formik.values.phone}
-                                       error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                       helperText={formik.touched.phone && formik.errors.phone}
-                                       onChange={formik.handleChange}/>
-                        </Grid>
-                        <Grid item md={6} lg={7}>
-                            <LoadingButton fullWidth loadingPosition={'end'} loading={loading} endIcon={<Payments/>}
-                                           onClick={() => formik.submitForm()}>
-                                Pay With MPESA
-                            </LoadingButton>
-                        </Grid>
+
+            {
+                fetchingBooking
+                ? (
+                    <Grid item xs={7} marginX={'auto'} my={5}>
+                        <Box sx={{ width: '100%' }}>
+                            <LinearProgress/>
+                        </Box>
                     </Grid>
-                </Paper>
-            </Grid>
+                ) : booking ? (
+                    <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                        <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
+                        You have a booking set for {booking.test_date}
+                    </Grid>
+                ) : (
+                        <>
+                            <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
+                                Apply
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, paddingY: 3 }}>
+                                    <Grid container spacing={2} justifyContent={'center'} padding={'1rem'}>
+                                        <Grid item md={5} lg={3}>
+                                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                                                <DateTimePicker minDateTime={moment().add(1, 'd')}
+                                                                shouldDisableDate={enableWedAndFri}
+                                                                label="Test date" value={formik.values.test_date}
+                                                                onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
+                                                                renderInput={(params) => (
+                                                                    <TextField {...params} name={'test_date'} fullWidth
+                                                                               error={formik.touched.test_date && Boolean(formik.errors.test_date)}
+                                                                               helperText={formik.touched.test_date && formik.errors.test_date}
+                                                                               placeholder={'Pick a test date'}/>
+                                                                )}/>
+                                            </LocalizationProvider>
+                                        </Grid>
+                                        <Grid item md={5} lg={3}>
+                                            <TextField name={'phone'} type={'number'} label="Phone Number" required
+                                                       fullWidth
+                                                       placeholder={'Phone number'} value={formik.values.phone}
+                                                       error={formik.touched.phone && Boolean(formik.errors.phone)}
+                                                       helperText={formik.touched.phone && formik.errors.phone}
+                                                       onChange={formik.handleChange}/>
+                                        </Grid>
+                                        <Grid item md={6} lg={7}>
+                                            <LoadingButton fullWidth loadingPosition={'end'} loading={loading}
+                                                           endIcon={<Payments/>}
+                                                           onClick={() => formik.submitForm()}>
+                                                Pay With MPESA
+                                            </LoadingButton>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            </Grid>
+                        </>
+                    )
+            }
         </Grid>
     );
 };
