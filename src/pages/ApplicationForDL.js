@@ -114,8 +114,7 @@ const ApplicationForDL = ({ type }) => {
                                     of test on site.
                                 </small><br />
                                 <small>
-                                    5.Applicants inquire driving licence information after inputting the test outcome by test center
-                                    and await printing and issuing.
+                                    5.Drivers possessing a PDL must be accompanied by a licensed driver while driving.
                                 </small>
 
                                 <br />
