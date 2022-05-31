@@ -8,7 +8,8 @@ import {
     Paper,
     Radio,
     RadioGroup,
-    TextField
+    TextField,
+    Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuth } from '../hooks/useAuth';
@@ -66,7 +67,7 @@ const Renewal = () => {
 
     useEffect(() => {
         getDocs(collection(db, `licenses/${user.uid}/classes`)).then(res => {
-            setExpiredDLs(res.docs.filter(doc => moment(doc.data().validUntil, 'MMMM Do YYYY').isAfter(moment()))
+            setExpiredDLs(res.docs.filter(doc => moment(doc.data().validUntil, 'MMMM Do YYYY').isBefore(moment()))
                 .map(doc => ({
                     id: doc.id,
                     data: doc.data()
@@ -94,7 +95,8 @@ const Renewal = () => {
                                 <LinearProgress />
                             </Box>
                         </Grid>
-                    ) : (
+                    ) :
+                    expiredDLs.length !== 0 ? (
                         <>
                             <Grid item xs={6} marginX={'auto'} textAlign={'center'}>
                                 <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main} />
@@ -152,6 +154,10 @@ const Renewal = () => {
                             </Grid>
                         </>
                     )
+                        :
+                        <Grid item xs={12}>
+                            <Typography variant='h4' textAlign='center' mx={'auto'} my={4}>DRIVE ON! YOUR DRIVING LICENSES ARE UP TO DATE.</Typography>
+                        </Grid>
             }
         </Grid>
     );
