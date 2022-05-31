@@ -34,9 +34,7 @@ const signInWithPhone = async phone => {
                 }
             },
             allowOutsideClick: () => !Swal.isLoading()
-        }).then(result => {
-            if (result.isConfirmed) return result.value;
-        });
+        }).then(result => result.isConfirmed && result.value);
     } catch (err) {
         console.log(err);
         toast({ msg: 'Unable to complete authentication!' });

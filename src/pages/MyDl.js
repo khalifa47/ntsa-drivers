@@ -3,17 +3,11 @@ import Grid from "@mui/material/Grid";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { findUserById } from '../redux/features/users/usersSlice';
-import { Avatar, Box, Card, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { Avatar, Box, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../firebase';
-
-const CardPro = styled(Card)(({ theme }) => ({
-    color: '#000',
-    padding: theme.spacing(2),
-    borderWidth: '2px',
-    borderColor: theme.palette.primary.main
-}));
+import { CardPro } from '../components/CardPro';
 
 const MyDl = () => {
     const { user } = useAuth();
