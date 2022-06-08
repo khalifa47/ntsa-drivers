@@ -74,7 +74,7 @@ const Renewal = () => {
 
             setFetchingDL(false);
         });
-    }, [user]);
+    }, [user, loading]);
 
     return (
         <Grid container spacing={2}>
@@ -111,8 +111,7 @@ const Renewal = () => {
                                             row
                                             onChange={(event, value) => {
                                                 formik.setFieldValue('id', value, true);
-                                            }}
-                                        >
+                                            }}>
                                             {expiredDLs?.map(dl => (
                                                 <FormControlLabel key={dl.id} value={dl.id} control={<Radio/>} label={
                                                     <CardPro>
