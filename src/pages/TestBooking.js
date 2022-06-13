@@ -64,36 +64,37 @@ const TestBooking = () => {
 
             setFetchingBooking(false);
         });
-    }, [user]);
+    }, [user, loading]);
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Grid item display={'flex'} marginY={'.7rem'}>
-                    <Feed fontSize={'small'} />
+                    <Feed fontSize={'small'}/>
                     <h1 style={{ marginLeft: '.7rem' }}>Driving Test Booking</h1>
                 </Grid>
-                <hr />
+                <hr/>
             </Grid>
             <Grid item xs={12}>
                 <Typography fontWeight={'bold'}>STEPS FOR APPLYING FOR PROVISIONAL DRIVING LICENCE:</Typography>
                 <div style={{ marginLeft: '1rem' }}>
-                    <small> 1.Apply for approved provisional driving licence with validity of three months so as to
+                    <small>
+                        1.Apply for approved provisional driving licence with validity of three months so as to
                         participate in driving school training and learning, and apply for corresponding type of
                         vehicle.
-                    </small><br />
+                    </small><br/>
                     <small>
                         2.After application is approved, waiting for the notification of physical check organized by
                         testing center.
-                    </small><br />
+                    </small><br/>
                     <small>
                         3.Those who passed physical check will participate in driving school training and apply for
                         testing booking.
-                    </small><br />
+                    </small><br/>
                     <small>
                         4.Attend test followed by booked time and place and staff in test center will give the outcome
                         of test on site.
-                    </small><br />
+                    </small><br/>
                     <small>
                         5.Applicants inquire driving licence information after inputting the test outcome by test center
                         and await printing and issuing.
@@ -107,24 +108,24 @@ const TestBooking = () => {
                         1.Applicants fill in the class endorsement application accurately and completely, and explain
                         the type of DL needs to be added, upload existing DL and scanning copy of ID. Renewal fee is
                         done by electronic payment.
-                    </small><br />
+                    </small><br/>
                     <small>
                         2.The application should be verified by NTSA staff, and attend training by themselves after
                         approval.
-                    </small><br />
+                    </small><br/>
                     <small>
                         3.Apply for test booking when passing the training in school.
-                    </small><br />
+                    </small><br/>
                     <small>
                         4.Attend test based on booked time and place and staff in testing center will provide the
                         outcome.
-                    </small><br />
+                    </small><br/>
                     <small>
                         5.Applicants inquire driving licence information after inputting the test outcome by test center
                         and await printing and issuing.
                     </small>
 
-                    <br />
+                    <br/>
                     <small>
                         Please note that the driving test costs a total of <strong>Ksh. 600</strong>
                     </small>
@@ -133,21 +134,21 @@ const TestBooking = () => {
 
             {
                 fetchingBooking
-                    ? (
-                        <Grid item xs={7} marginX={'auto'} my={5}>
-                            <Box sx={{ width: '100%' }}>
-                                <LinearProgress />
-                            </Box>
-                        </Grid>
-                    ) : booking ? (
-                        <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                            <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main} />
-                            You have a booking set for {booking.test_date}
-                        </Grid>
-                    ) : (
+                ? (
+                    <Grid item xs={7} marginX={'auto'} my={5}>
+                        <Box sx={{ width: '100%' }}>
+                            <LinearProgress/>
+                        </Box>
+                    </Grid>
+                ) : booking ? (
+                    <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                        <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
+                        You have a booking set for {booking.test_date}
+                    </Grid>
+                ) : (
                         <>
                             <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
-                                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main} />
+                                <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
                                 Apply
                             </Grid>
                             <Grid item xs={12}>
@@ -156,29 +157,29 @@ const TestBooking = () => {
                                         <Grid item md={5} lg={3}>
                                             <LocalizationProvider dateAdapter={AdapterMoment}>
                                                 <DateTimePicker minDateTime={moment().add(1, 'd')}
-                                                    shouldDisableDate={enableWedAndFri}
-                                                    label="Test date" value={formik.values.test_date}
-                                                    onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
-                                                    renderInput={(params) => (
-                                                        <TextField {...params} name={'test_date'} fullWidth
-                                                            error={formik.touched.test_date && Boolean(formik.errors.test_date)}
-                                                            helperText={formik.touched.test_date && formik.errors.test_date}
-                                                            placeholder={'Pick a test date'} />
-                                                    )} />
+                                                                shouldDisableDate={enableWedAndFri}
+                                                                label="Test date" value={formik.values.test_date}
+                                                                onChange={(newValue) => formik.setFieldValue('test_date', newValue, true)}
+                                                                renderInput={(params) => (
+                                                                    <TextField {...params} name={'test_date'} fullWidth
+                                                                               error={formik.touched.test_date && Boolean(formik.errors.test_date)}
+                                                                               helperText={formik.touched.test_date && formik.errors.test_date}
+                                                                               placeholder={'Pick a test date'}/>
+                                                                )}/>
                                             </LocalizationProvider>
                                         </Grid>
                                         <Grid item md={5} lg={3}>
                                             <TextField name={'phone'} type={'number'} label="Phone Number" required
-                                                fullWidth
-                                                placeholder={'Phone number'} value={formik.values.phone}
-                                                error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                                helperText={formik.touched.phone && formik.errors.phone}
-                                                onChange={formik.handleChange} />
+                                                       fullWidth
+                                                       placeholder={'Phone number'} value={formik.values.phone}
+                                                       error={formik.touched.phone && Boolean(formik.errors.phone)}
+                                                       helperText={formik.touched.phone && formik.errors.phone}
+                                                       onChange={formik.handleChange}/>
                                         </Grid>
                                         <Grid item md={6} lg={7}>
                                             <LoadingButton fullWidth loadingPosition={'end'} loading={loading}
-                                                endIcon={<Payments />}
-                                                onClick={() => formik.submitForm()}>
+                                                           endIcon={<Payments/>}
+                                                           onClick={() => formik.submitForm()}>
                                                 Pay With MPESA
                                             </LoadingButton>
                                         </Grid>

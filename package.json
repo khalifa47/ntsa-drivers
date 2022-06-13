@@ -33,6 +33,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
+    "app": "npm run start && cd functions && npm run serve",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
