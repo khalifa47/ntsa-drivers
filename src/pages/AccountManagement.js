@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Grid, Paper, TextField } from '@mui/material';
+import { Autocomplete, Grid, LinearProgress, Paper, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useAuth } from 'hooks/useAuth';
 import { useState } from 'react';
@@ -10,7 +10,22 @@ import * as yup from 'yup';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PasswordIcon from '@mui/icons-material/Password';
 import { doc, updateDoc } from 'firebase/firestore';
-import db from '../firebase';
+import db, { auth, uploadProfilePic } from '../firebase';
+
+// Import React FilePond with plugins & styles
+import { FilePond, registerPlugin } from 'react-filepond';
+
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+import FilePondPluginFileRename from 'filepond-plugin-file-rename';
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+// Register filepond plugins
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginFileValidateSize, FilePondPluginFileRename);
 
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
@@ -28,16 +43,18 @@ const validationSchemaPassword = yup.object({
 });
 
 const AccountManagement = () => {
-    const { user } = useAuth();
+    const { user:storageUser } = useAuth();
     const theme = useTheme();
 
     const [loadingBasic, setLoadingBasic] = useState(false);
     const [loadingPassword, setLoadingPassword] = useState(false);
+    const [user, loading] = useAuthState(auth);
 
     const formikBasic = useFormik({
         initialValues: {
-            email: user?.email,
-            blood_group: user?.blood_group
+            email: storageUser?.email,
+            blood_group: storageUser?.blood_group,
+            image: '',
         },
         validateOnChange: true,
         validationSchema: validationSchemaBasic,
@@ -45,12 +62,17 @@ const AccountManagement = () => {
             setLoadingBasic(true);
 
             try {
-                await updateDoc(doc(db, 'users', user.uid), {
+                await updateDoc(doc(db, 'users', storageUser.uid), {
                     email: values.email,
                     blood_group: values.blood_group
                 });
+
+                if (values.image) {
+                    await uploadProfilePic(values.image, user);
+                }
+
                 localStorage.setItem('user', JSON.stringify({
-                    ...user,
+                    ...storageUser,
                     email: values.email,
                     blood_group: values.blood_group
                 }));
@@ -74,15 +96,15 @@ const AccountManagement = () => {
             setLoadingPassword(true);
 
             try {
-                const passwordsMatch = Password.verify(values.old_password, user.password);
+                const passwordsMatch = Password.verify(values.old_password, storageUser.password);
 
                 if (!passwordsMatch) throw new Error('Invalid Password Entered');
 
-                await updateDoc(doc(db, 'users', user.uid), {
+                await updateDoc(doc(db, 'users', storageUser.uid), {
                     password: Password.hash(values.password)
                 });
                 localStorage.setItem('user', JSON.stringify({
-                    ...user,
+                    ...storageUser,
                     password: Password.hash(values.password)
                 }));
                 toast({ msg: 'Password changed successfully' });
@@ -92,6 +114,8 @@ const AccountManagement = () => {
             setLoadingPassword(false);
         }
     });
+
+    if (loading) return <LinearProgress/>;
 
     return (
         <Grid container spacing={2} p="1rem" pt={{ xs: 2, md: 1 }}>
@@ -118,6 +142,16 @@ const AccountManagement = () => {
                                    error={formikBasic.touched.email && Boolean(formikBasic.errors.email)}
                                    helperText={formikBasic.touched.email && formikBasic.errors.email}
                                    onChange={formikBasic.handleChange}/>
+                    </Grid>
+                    <Grid item xs={12} sx={{ mt: 2 }}>
+                        <FilePond maxFiles={1} name="image" maxFileSize={'1MB'} className={'mb-0'}
+                                  labelMaxFileSizeExceeded={'Image is too large.'}
+                                  labelFileTypeNotAllowed={'Invalid image type. allowed(jpg, png, jpeg)'}
+                                  labelIdle='Drag & Drop an image or <span class="filepond--label-action">Browse</span>'
+                                  acceptedFileTypes={['image/jpg', 'image/png', 'image/jpeg']} dropOnPage
+                                  imageResizeTargetWidth={300} imageResizeTargetHeight={300}
+                                  onupdatefiles={image => formikBasic.setFieldValue('image', image[0]?.file, true)}
+                                  onremovefile={() => formikBasic.setFieldValue('image', null, true)}/>
                     </Grid>
                     <Grid item xs={12} textAlign={'center'} mt={'1rem'}>
                         <LoadingButton

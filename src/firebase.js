@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
-import { getAuth, } from 'firebase/auth';
+import { getAuth, updateProfile } from 'firebase/auth';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,7 +17,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
+const storage = getStorage(app);
 const db = getFirestore(app);
+
+export const uploadProfilePic = async (file, user) => {
+    const fileRef = ref(storage, `${user.uid}.png`);
+
+    const snapshot = await uploadBytes(fileRef, file)
+    const photoURL = await getDownloadURL(fileRef)
+
+    await updateProfile(user, {photoURL})
+};
 
 export { auth };
 export default db;
