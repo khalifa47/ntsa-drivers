@@ -141,9 +141,9 @@ const TestBooking = () => {
                         </Box>
                     </Grid>
                 ) : booking ? (
-                    <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                    <Grid item xs={11} lg={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
                         <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main}/>
-                        You have a booking set for {booking.test_date}
+                        You have a booking set for <b>{booking.test_date}</b>
                     </Grid>
                 ) : (
                         <>

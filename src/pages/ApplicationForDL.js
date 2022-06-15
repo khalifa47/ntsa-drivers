@@ -159,14 +159,14 @@ const ApplicationForDL = ({ type }) => {
                         </Grid>
                     ) : (
                         <>
-                            <Grid item xs={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
+                            <Grid item xs={11} lg={6} marginX={'auto'} my={'1rem'} textAlign={'center'}>
                                 <Divider light variant={'middle'} sx={{ my: 2 }} color={theme.palette.primary.main} />
                                 {
                                     dl && (
                                         <Box color={'silver'}>
                                             <Typography>
                                                 You currently have an active {type === 'pdl' ? 'PDL' : 'SmartDL'} for the vehicle of class {dl.class} that
-                                                expires on {dl.validUntil}
+                                                <b> expires on {dl.validUntil}</b>.
                                             </Typography>
                                             <Divider light variant={'middle'} sx={{ my: 2 }}
                                                 color={theme.palette.primary.main} />

@@ -1,5 +1,5 @@
 import db, { storage, auth } from '../firebase';
-import { toast } from '../utils/helpers';
+import { Password, toast } from '../utils/helpers';
 import { doc, updateDoc } from 'firebase/firestore';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { PhoneAuthProvider, RecaptchaVerifier, updatePhoneNumber, updateProfile } from 'firebase/auth';
@@ -75,5 +75,28 @@ export const User = {
         const photoURL = await getDownloadURL(fileRef);
 
         await updateProfile(user, { photoURL });
+    },
+
+    updatePassword: async data => {
+        try {
+            const storageUser = JSON.parse(localStorage.getItem('user'))
+
+            const passwordsMatch = Password.verify(data.old_password, storageUser.password);
+
+            if (!passwordsMatch) return toast({ msg: 'Invalid Password Entered.' });
+
+            await updateDoc(doc(db, 'users', storageUser.uid), {
+                password: Password.hash(data.password)
+            });
+
+            localStorage.setItem('user', JSON.stringify({
+                ...storageUser,
+                password: Password.hash(data.password)
+            }));
+
+            toast({ msg: 'Password changed successfully' });
+        } catch (err) {
+            toast({ msg: err.message });
+        }
     }
 }

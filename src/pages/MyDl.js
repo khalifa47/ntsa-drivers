@@ -67,8 +67,6 @@ const MyDl = () => {
         }
     }, [storageUser, dispatch]);
 
-    console.log(user);
-
     const theme = useTheme();
 
     return (

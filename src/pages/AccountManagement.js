@@ -86,19 +86,7 @@ const AccountManagement = () => {
         onSubmit: async values => {
             setLoadingPassword(true);
 
-            try {
-                const passwordsMatch = Password.verify(values.old_password, storageUser.password);
-
-                if (!passwordsMatch) return toast({ msg: 'Invalid Password Entered.' });
-
-                await updateDoc(doc(db, 'users', storageUser.uid), {
-                    password: Password.hash(values.password)
-                });
-
-                toast({ msg: 'Password changed successfully' });
-            } catch (err) {
-                toast({ msg: err.message });
-            }
+            await User.updatePassword(values)
 
             setLoadingPassword(false);
         }
@@ -112,14 +100,14 @@ const AccountManagement = () => {
                 <Paper component={'form'} onSubmit={formikBasic.handleSubmit}
                        sx={{ borderWidth: 1, borderColor: theme.palette.primary.main, p: 3 }}>
                     <Grid container spacing={2}>
-                        <Grid item lg={6}>
+                        <Grid item xs={12} lg={6}>
                             <TextField name={'email'} label="Email Address" fullWidth required
                                        placeholder={'Email address'} value={formikBasic.values.email}
                                        error={formikBasic.touched.email && Boolean(formikBasic.errors.email)}
                                        helperText={formikBasic.touched.email && formikBasic.errors.email}
                                        onChange={formikBasic.handleChange}/>
                         </Grid>
-                        <Grid item lg={6}>
+                        <Grid item xs={12} lg={6}>
                             <TextField name={'phone'} label="Phone Number" fullWidth required
                                        placeholder={'Phone number'} value={formikBasic.values.phone}
                                        error={formikBasic.touched.phone && Boolean(formikBasic.errors.phone)}
