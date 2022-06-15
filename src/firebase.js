@@ -1,7 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
-import { getAuth, updateProfile } from 'firebase/auth';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getAuth, PhoneAuthProvider, RecaptchaVerifier, updatePhoneNumber, updateProfile } from 'firebase/auth';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { parsePhoneNumber } from 'libphonenumber-js';
+import Swal from 'sweetalert2';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -23,10 +25,46 @@ const db = getFirestore(app);
 export const uploadProfilePic = async (file, user) => {
     const fileRef = ref(storage, `${user.uid}.png`);
 
-    const snapshot = await uploadBytes(fileRef, file)
-    const photoURL = await getDownloadURL(fileRef)
+    await uploadBytes(fileRef, file);
+    const photoURL = await getDownloadURL(fileRef);
 
-    await updateProfile(user, {photoURL})
+    await updateProfile(user, { photoURL });
+};
+
+export const updatePhone = async (user, phone) => {
+    const { number } = parsePhoneNumber(phone, 'KE');
+
+    let appVerifier = new RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        defaultCountry: 'KE'
+    }, auth);
+
+    return await new PhoneAuthProvider(auth)
+        .verifyPhoneNumber(number, appVerifier)
+        .then(async function (verificationId) {
+            return await Swal.fire({
+                input: 'number',
+                inputLabel: 'One Time Password',
+                inputPlaceholder: 'Kindly enter the OTP sent via SMS.',
+                showLoaderOnConfirm: true,
+                preConfirm: async code => {
+                    if (isNaN(code) || code.length !== 6) {
+                        return Swal.showValidationMessage('OTP must be a six digit number.');
+                    }
+
+                    try {
+                        const phoneCredential = PhoneAuthProvider.credential(verificationId, code);
+
+                        return await updatePhoneNumber(user, phoneCredential);
+                    } catch (err) {
+                        if (err.code === "auth/invalid-verification-code") {
+                            return Swal.showValidationMessage('Invalid OTP');
+                        }
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then(result => result.isConfirmed && result.value);
+        });
 };
 
 export { auth };

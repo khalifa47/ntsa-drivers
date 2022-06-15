@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { PageLoader } from '../components/PageLoader';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import { AppBar, Grid, Toolbar } from '@mui/material';
+import { AppBar, Toolbar } from '@mui/material';
 
 const GuestLayout = () => {
     const theme = useTheme();
