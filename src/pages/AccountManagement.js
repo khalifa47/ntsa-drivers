@@ -10,7 +10,7 @@ import * as yup from 'yup';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PasswordIcon from '@mui/icons-material/Password';
 import { doc, updateDoc } from 'firebase/firestore';
-import db, { auth, updatePhone, uploadProfilePic } from '../firebase';
+import db, { auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 
@@ -24,6 +24,7 @@ import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import FilePondPluginFileRename from 'filepond-plugin-file-rename';
 import 'filepond/dist/filepond.min.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import { User } from '../service/user.service';
 
 // Register filepond plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginFileValidateSize, FilePondPluginFileRename);
@@ -68,28 +69,8 @@ const AccountManagement = () => {
         onSubmit: async values => {
             setLoadingBasic(true);
 
-            try {
-                if (values.phone !== user.phoneNumber)
-                    if (!await updatePhone(user, values.phone)) return toast({
-                        msg: 'Unable to update profile.',
-                        type: 'danger'
-                    });
+            await User.update(user, values)
 
-                await updateDoc(doc(db, 'users', storageUser.uid), values);
-
-                if (values.image) await uploadProfilePic(values.image, user);
-
-                localStorage.setItem('user', JSON.stringify({
-                    ...storageUser,
-                    phone: values.phone,
-                    email: values.email,
-                    blood_group: values.blood_group
-                }));
-
-                toast({ msg: 'Profile updated successfully.' });
-            } catch (err) {
-                toast({ msg: err.message });
-            }
             setLoadingBasic(false);
         }
     });
@@ -108,19 +89,17 @@ const AccountManagement = () => {
             try {
                 const passwordsMatch = Password.verify(values.old_password, storageUser.password);
 
-                if (!passwordsMatch) throw new Error('Invalid Password Entered');
+                if (!passwordsMatch) return toast({ msg: 'Invalid Password Entered.' });
 
                 await updateDoc(doc(db, 'users', storageUser.uid), {
                     password: Password.hash(values.password)
                 });
-                localStorage.setItem('user', JSON.stringify({
-                    ...storageUser,
-                    password: Password.hash(values.password)
-                }));
+
                 toast({ msg: 'Password changed successfully' });
             } catch (err) {
                 toast({ msg: err.message });
             }
+
             setLoadingPassword(false);
         }
     });
@@ -171,7 +150,7 @@ const AccountManagement = () => {
                                       onupdatefiles={image => formikBasic.setFieldValue('image', image[0]?.file, true)}
                                       onremovefile={() => formikBasic.setFieldValue('image', null, true)}/>
                         </Grid>
-                        <Grid item xs={12} textAlign={'center'} mt={'1rem'}>
+                        <Grid item xs={12} textAlign={'center'}>
                             <LoadingButton
                                 loading={loadingBasic}
                                 type={'submit'}
