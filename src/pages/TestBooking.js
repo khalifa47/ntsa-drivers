@@ -58,6 +58,7 @@ const TestBooking = () => {
 
         getDoc(docRef).then(docSnap => {
             if (docSnap.exists()) {
+                console.log(docSnap.data());
                 if (moment(docSnap.data().test_date, 'dddd Do MMM YYYY, h:mm a')
                     .isAfter(moment())) setBooking(docSnap.data());
             }

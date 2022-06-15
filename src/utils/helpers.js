@@ -77,7 +77,6 @@ export class MpesaService {
         this.class = values.class;
     }
 
-
     init = async () => {
         try {
             const { data: { CheckoutRequestID } } = await axios.post(`${this.baseUrl}/initiate-stk`, {
@@ -127,8 +126,8 @@ export class MpesaService {
                     body: JSON.stringify({ checkout_request_id: this.checkoutRequestId })
                 })
                     .then(response => response.json())
-                    .then(data => data).catch(() => {
-                        Swal.fire({
+                    .then(data => data).catch(async () => {
+                        await Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
                             text: 'Something went wrong!',
