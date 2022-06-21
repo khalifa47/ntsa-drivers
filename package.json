@@ -15,6 +15,11 @@
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^14.1.1",
     "axios": "^0.27.2",
+    "filepond-plugin-file-rename": "^1.1.8",
+    "filepond-plugin-file-validate-size": "^2.2.7",
+    "filepond-plugin-file-validate-type": "^1.2.8",
+    "filepond-plugin-image-exif-orientation": "^1.0.11",
+    "filepond-plugin-image-preview": "^4.6.11",
     "firebase": "^9.6.11",
     "formik": "^2.2.9",
     "libphonenumber-js": "^1.9.52",
@@ -23,6 +28,7 @@
     "moment": "^2.29.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-filepond": "^7.1.2",
     "react-firebase-hooks": "^5.0.3",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.3.0",
@@ -33,6 +39,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
+    "app": "npm run start && cd functions && npm run serve",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

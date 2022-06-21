@@ -6,7 +6,7 @@ import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firesto
 import db, { auth } from '../../../firebase';
 import Swal from 'sweetalert2';
 
-const signInWithPhone = async phone => {
+export const signInWithPhone = async phone => {
     let appVerifier = new RecaptchaVerifier('recaptcha-container', {
         size: 'invisible',
         defaultCountry: 'KE'
