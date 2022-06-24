@@ -63,13 +63,14 @@ export const Password = {
 };
 
 export class MpesaService {
-    baseUrl = 'http://localhost:5001/ntsa-drivers-e8a6a/us-central1/api/mpesa';
+    baseUrl = 'https://mpesa-node-api.herokuapp.com/api/v1/mpesa';
     checkoutRequestId = null;
     uid = null;
     phone = null;
     class = null;
     amount = 1;
-    onSuccess = () => {}
+    onSuccess = () => {
+    };
 
     constructor(values, uid) {
         this.uid = uid;
@@ -79,17 +80,15 @@ export class MpesaService {
 
     init = async () => {
         try {
-            const { data: { CheckoutRequestID } } = await axios.post(`${this.baseUrl}/initiate-stk`, {
+            const { data: { checkout_request_id } } = await axios.post(`${this.baseUrl}/initiate-stk`, {
                 phone: this.phone,
                 amount: this.amount,
                 uid: this.uid
             });
 
-            if (CheckoutRequestID) {
-                this.checkoutRequestId = CheckoutRequestID;
+            this.checkoutRequestId = checkout_request_id;
 
-                return await this.alert();
-            }
+            return await this.alert();
         } catch (err) {
             console.error(err);
 
@@ -101,10 +100,9 @@ export class MpesaService {
         }
     };
 
-    fetchStkStatus = async () => {
-        return await fetch('/admin/payments/callbacks/stk_status/')
-            .then(response => response.json())
-            .then(data => data);
+    queryStkStatus = async () => {
+        return axios.post(`${this.baseUrl}/query-request`, { checkout_request_id: this.checkoutRequestId, })
+                    .then(({ data }) => data);
     };
 
     alert = (data = {}) => {
@@ -118,22 +116,21 @@ export class MpesaService {
             showCancelButton: true,
             backdrop: `rgba(0, 0, 123, 0.4)`,
             preConfirm: () => {
-                return fetch(`${this.baseUrl}/query-status`, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'POST',
-                    body: JSON.stringify({ checkout_request_id: this.checkoutRequestId })
-                })
-                    .then(response => response.json())
-                    .then(data => data).catch(async () => {
-                        await Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                            footer: '<a href>Report this issue?</a>'
-                        });
+                return this.queryStkStatus().catch(async err => {
+                    console.log(err);
+                    await Swal.fire({
+                        type: 'error',
+                        message: 'Something went wrong!',
+                        toast: false,
+                        text: 'Oops...',
+                        position: 'center',
+                        duration: 30,
+                        backdrop: `rgba(150, 0, 0, 0.4)`,
+                        footer: '<a href="/contact-us">Report this issue?</a>'
                     });
+
+                    return false;
+                });
             },
             allowOutsideClick: () => !Swal.isLoading(),
         }).then(async (result) => {
@@ -149,7 +146,7 @@ export class MpesaService {
             } else if (result.isConfirmed) {
                 return await this.confirmResponse(result.value);
             } else {
-                return await this.fetchStkStatus().then(async result => await this.confirmResponse(result));
+                return await this.queryStkStatus().then(async result => await this.confirmResponse(result));
             }
         });
     };
@@ -168,7 +165,7 @@ export class MpesaService {
             icon = 'success';
             title = 'Payment Successful!';
 
-            this.onSuccess()
+            this.onSuccess();
         } else {
             icon = 'warning';
             title = 'Something went wrong!';
