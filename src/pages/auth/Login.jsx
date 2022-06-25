@@ -22,7 +22,6 @@ const validationSchema = yup.object({
 const Login = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
@@ -36,7 +35,7 @@ const Login = () => {
 
                 dispatch(setUser(JSON.stringify(user)));
 
-                navigate('/');
+                window.location = '/';
             } catch (err) {
                 console.error(err);
                 toast({ msg: err.message });

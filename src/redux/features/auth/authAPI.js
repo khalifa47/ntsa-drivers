@@ -1,5 +1,5 @@
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { Password, toast } from '../../../utils/helpers';
+import { Password, toast } from 'utils/helpers';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import publicRecords from '../../../records.json';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
@@ -42,6 +42,7 @@ export const signInWithPhone = async phone => {
 };
 
 export const register = async ({ email, phone, blood_group, password, serial_number: serial_id }) => {
+    //  254741712853
     const q = query(collection(db, "users"), where("serial_id", "==", Number(serial_id)));
     const docs = await getDocs(q);
 
